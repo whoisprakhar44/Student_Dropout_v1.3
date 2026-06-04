@@ -17,6 +17,13 @@ Environment variables (.env):
     MYSQL_POOL_SIZE default: 10
 """
 
+try:
+    import sys
+    import pysqlite3
+    sys.modules["sqlite3"] = pysqlite3
+except ImportError:
+    pass
+
 import json
 import logging
 import os

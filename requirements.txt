@@ -13,3 +13,4 @@ requests
 sqlalchemy
 mcp
 mysql-connector-python
+pysqlite3-binary; sys_platform == 'linux'

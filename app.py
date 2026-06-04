@@ -1,3 +1,10 @@
+try:
+    import sys
+    import pysqlite3
+    sys.modules["sqlite3"] = pysqlite3
+except ImportError:
+    pass
+
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any

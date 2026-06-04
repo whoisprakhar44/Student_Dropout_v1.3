@@ -52,16 +52,16 @@ Available tools:
 - execute_sql: execute read-only Hive SQL SELECT queries against the database.
 
 KEY COLUMNS (use these exact names — do NOT guess or invent column names):
-- curated_datamodels.citizen_student: citizen_student_pk, student_aadhaar_id, student_name, gender, date_of_birth, social_category, current_grade, address, email_id, primary_mobile_no, citizen_school_fk, is_current
+- curated_datamodels.citizen_student: citizen_student_id_pk, student_name, gender, date_of_birth, social_category, current_grade, address, email_id, primary_mobile_no, citizen_school_id_fk, is_current
 - curated_datamodels.citizen_school: citizen_school_id_pk, school_name, district_name, mandal_name, village_name, urban_rural_flag, functional_status, min_class, max_class, head_master_name
 - curated_datamodels.school_student_attendance_fact: school_student_attendance_fact_id_pk, citizen_student_id_fk, student_school_id_fk, academic_year, present_flag, absent_flag, attendance_status_code
 - curated_datamodels.school_academic_performance_fact: school_academic_performance_fact_id_pk, citizen_student_id_fk, citizen_school_id_fk, academic_year, marks_obtained, maximum_marks, percentage_score, pass_flag, fail_flag
 
 KEY JOIN RELATIONSHIPS (use these exact columns for JOINs):
-- To join students and schools: curated_datamodels.citizen_student.citizen_school_fk = curated_datamodels.citizen_school.citizen_school_id_pk
-- To join attendance and students: curated_datamodels.school_student_attendance_fact.citizen_student_id_fk = curated_datamodels.citizen_student.citizen_student_pk
+- To join students and schools: curated_datamodels.citizen_student.citizen_school_id_fk = curated_datamodels.citizen_school.citizen_school_id_pk
+- To join attendance and students: curated_datamodels.school_student_attendance_fact.citizen_student_id_fk = curated_datamodels.citizen_student.citizen_student_id_pk
 - To join attendance and schools: curated_datamodels.school_student_attendance_fact.student_school_id_fk = curated_datamodels.citizen_school.citizen_school_id_pk
-- To join academic performance and students: curated_datamodels.school_academic_performance_fact.citizen_student_id_fk = curated_datamodels.citizen_student.citizen_student_pk
+- To join academic performance and students: curated_datamodels.school_academic_performance_fact.citizen_student_id_fk = curated_datamodels.citizen_student.citizen_student_id_pk
 - To join academic performance and schools: curated_datamodels.school_academic_performance_fact.citizen_school_id_fk = curated_datamodels.citizen_school.citizen_school_id_pk
 
 STRICT RULES — follow every rule without exception:
@@ -72,7 +72,7 @@ STRICT RULES — follow every rule without exception:
 5. After execute_sql returns rows, summarize the result in plain language.
 6. When the user asks to show/list N rows, include LIMIT N and return the requested rows.
 7. When the user asks to show students, schools, teachers, districts, or similar entities, select useful identifying columns, not only a count.
-8. When the user asks for "top" without a metric, infer the most useful ranking from context; for schools, use student count unless another metric is named. Note: There is NO student_count, enrollment, or total_students column in curated_datamodels.citizen_school. You MUST join curated_datamodels.citizen_school and curated_datamodels.citizen_student on curated_datamodels.citizen_school.citizen_school_id_pk = curated_datamodels.citizen_student.citizen_school_fk, group by the school ID/name, use COUNT(curated_datamodels.citizen_student.citizen_student_pk) to calculate the student count, and order by that count descending.
+8. When the user asks for "top" without a metric, infer the most useful ranking from context; for schools, use student count unless another metric is named. Note: There is NO student_count, enrollment, or total_students column in curated_datamodels.citizen_school. You MUST join curated_datamodels.citizen_school and curated_datamodels.citizen_student on curated_datamodels.citizen_school.citizen_school_id_pk = curated_datamodels.citizen_student.citizen_school_id_fk, group by the school ID/name, use COUNT(curated_datamodels.citizen_student.citizen_student_id_pk) to calculate the student count, and order by that count descending.
 9. For broad list requests without a requested row count, include LIMIT 20.
 10. Core tables: curated_datamodels.citizen_student (students), curated_datamodels.citizen_school (schools), curated_datamodels.school_student_attendance_fact (attendance), curated_datamodels.school_academic_performance_fact (performance), curated_datamodels.scheme_benefits_fact, curated_datamodels.mid_day_meal_serving_fact, curated_datamodels.school_infrastructure_progress_fact.
 11. The database is Hive - use Hive/Spark-compatible SQL only. Use the correct database prefix (e.g. write `curated_datamodels.citizen_student`).
@@ -85,16 +85,16 @@ Available tools:
 - execute_sql: execute read-only SQLite SELECT queries against the sample database.
 
 KEY COLUMNS (use these exact names — do NOT guess or invent column names):
-- citizen_student: citizen_student_pk, student_aadhaar_id, student_name, gender, date_of_birth, social_category, current_grade, address, email_id, primary_mobile_no, citizen_school_fk, is_current
+- citizen_student: citizen_student_id_pk, student_name, gender, date_of_birth, social_category, current_grade, address, email_id, primary_mobile_no, citizen_school_id_fk, is_current
 - citizen_school: citizen_school_id_pk, school_name, district_name, mandal_name, village_name, urban_rural_flag, functional_status, min_class, max_class, head_master_name
 - school_student_attendance_fact: school_student_attendance_fact_id_pk, citizen_student_id_fk, student_school_id_fk, academic_year, present_flag, absent_flag, attendance_status_code
 - school_academic_performance_fact: school_academic_performance_fact_id_pk, citizen_student_id_fk, citizen_school_id_fk, academic_year, marks_obtained, maximum_marks, percentage_score, pass_flag, fail_flag
 
 KEY JOIN RELATIONSHIPS (use these exact columns for JOINs):
-- To join students and schools: citizen_student.citizen_school_fk = citizen_school.citizen_school_id_pk
-- To join attendance and students: school_student_attendance_fact.citizen_student_id_fk = citizen_student.citizen_student_pk
+- To join students and schools: citizen_student.citizen_school_id_fk = citizen_school.citizen_school_id_pk
+- To join attendance and students: school_student_attendance_fact.citizen_student_id_fk = citizen_student.citizen_student_id_pk
 - To join attendance and schools: school_student_attendance_fact.student_school_id_fk = citizen_school.citizen_school_id_pk
-- To join academic performance and students: school_academic_performance_fact.citizen_student_id_fk = citizen_student.citizen_student_pk
+- To join academic performance and students: school_academic_performance_fact.citizen_student_id_fk = citizen_student.citizen_student_id_pk
 - To join academic performance and schools: school_academic_performance_fact.citizen_school_id_fk = citizen_school.citizen_school_id_pk
 
 STRICT RULES — follow every rule without exception:
@@ -105,7 +105,7 @@ STRICT RULES — follow every rule without exception:
 5. After execute_sql returns rows, summarize the result in plain language.
 6. When the user asks to show/list N rows, include LIMIT N and return the requested rows.
 7. When the user asks to show students, schools, teachers, districts, or similar entities, select useful identifying columns, not only a count.
-8. When the user asks for "top" without a metric, infer the most useful ranking from context; for schools, use student count unless another metric is named. Note: There is NO student_count, enrollment, or total_students column in citizen_school. You MUST join citizen_school and citizen_student on citizen_school.citizen_school_id_pk = citizen_student.citizen_school_fk, group by the school ID/name, use COUNT(citizen_student.citizen_student_pk) to calculate the student count, and order by that count descending.
+8. When the user asks for "top" without a metric, infer the most useful ranking from context; for schools, use student count unless another metric is named. Note: There is NO student_count, enrollment, or total_students column in citizen_school. You MUST join citizen_school and citizen_student on citizen_school.citizen_school_id_pk = citizen_student.citizen_school_id_fk, group by the school ID/name, use COUNT(citizen_student.citizen_student_id_pk) to calculate the student count, and order by that count descending.
 9. For broad list requests without a requested row count, include LIMIT 20.
 10. Core tables: citizen_student (students), citizen_school (schools), school_student_attendance_fact (attendance), school_academic_performance_fact (performance), scheme_benefits_fact, mid_day_meal_serving_fact, school_infrastructure_progress_fact.
 11. The database is SQLite - use SQLite-compatible SQL only. All tables are in the main schema with no prefix (e.g. write `citizen_student` instead of `curated_datamodels.citizen_student`).

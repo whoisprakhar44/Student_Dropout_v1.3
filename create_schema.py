@@ -5,6 +5,13 @@ Create and seed the local SQLite sample database from schema/curated_datamodels.
 
 from __future__ import annotations
 
+try:
+    import sys
+    import pysqlite3
+    sys.modules["sqlite3"] = pysqlite3
+except ImportError:
+    pass
+
 import os
 import random
 import sqlite3
@@ -46,7 +53,7 @@ def _sqlite_type(source_type: str) -> str:
 
 def _load_table_docs() -> list[dict[str, Any]]:
     docs = []
-    for path in sorted(TABLES_DIR.glob("*.yaml")):
+    for path in sorted(TABLES_DIR.rglob("*.yaml")):
         doc = yaml.safe_load(path.read_text(encoding="utf-8"))
         if doc and doc.get("table") and doc.get("columns"):
             docs.append(doc)
@@ -265,10 +272,10 @@ def _seed_schools_and_people(cursor: sqlite3.Cursor, table_columns: dict[str, li
         school_id = random.randint(1, 50)
         grade = random.randint(1, 10)
         _insert(cursor, table_columns, "citizen_student", {
-            "citizen_student_pk": student_id,
-            "citizen_school_fk": school_id,
-            "citizen_master_fk": 100000 + student_id,
-            "student_subject_fk": random.randint(1, 5),
+            "citizen_student_id_pk": student_id,
+            "citizen_school_id_fk": school_id,
+            "student_citizen_master_id_fk": 100000 + student_id,
+            "student_subject_id_fk": random.randint(1, 5),
             "student_aadhaar_id": str(900000000000 + student_id),
             "student_name": f"{first} {last}",
             "gender": random.choice(["M", "F"]),
@@ -283,8 +290,8 @@ def _seed_schools_and_people(cursor: sqlite3.Cursor, table_columns: dict[str, li
             "current_grade": str(grade),
             "medium_key": random.choice(["ENG", "TEL", "URD"]),
             "is_current": "Y",
-            "mother_aadhaar_id": str(800000000000 + student_id),
-            "father_aadhaar_id": str(700000000000 + student_id),
+            "mother_citizen_master_id_fk": 800000000000 + student_id,
+            "father_citizen_master_id_fk": 700000000000 + student_id,
             "is_current_flag": "Y",
             "primary_mobile_no": str(9000000000 + student_id),
             "address": f"House {student_id}, Village Road",
@@ -300,11 +307,11 @@ def _seed_facts(cursor: sqlite3.Cursor, table_columns: dict[str, list[str]]) -> 
     benefit_id = 1
     for student_id in range(1, 1001):
         school_id = cursor.execute(
-            "SELECT citizen_school_fk FROM citizen_student WHERE citizen_student_pk = ?",
+            "SELECT citizen_school_id_fk FROM citizen_student WHERE citizen_student_id_pk = ?",
             (student_id,),
         ).fetchone()[0]
         class_id = int(cursor.execute(
-            "SELECT current_grade FROM citizen_student WHERE citizen_student_pk = ?",
+            "SELECT current_grade FROM citizen_student WHERE citizen_student_id_pk = ?",
             (student_id,),
         ).fetchone()[0])
         for year in ACADEMIC_YEARS:

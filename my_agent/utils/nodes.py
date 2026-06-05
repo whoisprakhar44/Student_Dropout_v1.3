@@ -237,9 +237,13 @@ def llm_node(state: AgentState) -> dict:
             "llm_calls": current_calls,
         }
 
-    # If a successful SQL result already exists in history, summarise and stop.
+    # If a successful SQL result already exists in history, summarise and stop —
+    # BUT only if we are not currently in a verification retry cycle.
+    # When verify_calls > 0 and verified is still False the verify_node sent us
+    # back here to regenerate SQL, so we must NOT short-circuit.
+    in_verify_retry = state.get("verify_calls", 0) > 0 and not state.get("verified", False)
     sql_results = _tool_messages(history, "execute_sql")
-    if sql_results:
+    if sql_results and not in_verify_retry:
         summary = _summarize_sql_result(state["user_query"], sql_results[-1].content)
         if summary:
             logger.info("llm_node: summarized SQL result in %.2fs", time.perf_counter() - t0)
@@ -331,3 +335,165 @@ def build_tool_node() -> ToolNode:
         raise RuntimeError("Tools not loaded before building tool node.")
     return ToolNode(tool_registry.execution_tools)
 
+
+# ---------------------------------------------------------------------------
+# Verification node
+# ---------------------------------------------------------------------------
+_MAX_VERIFY_LOOPS = 5
+
+_VERIFY_PROMPT = """You are a strict SQL result verifier.
+
+User question: {user_query}
+
+SQL query that was executed:
+{sql}
+
+Query result (up to 20 rows shown):
+{result_table}
+
+Does this result correctly and completely answer the user's question?
+
+Reply with EXACTLY one of:
+  CORRECT: <one-sentence explanation of why the result is correct>
+  RETRY: <one-sentence explanation of what is wrong and how to fix the SQL>
+
+Do NOT output anything else."""
+
+
+def _extract_sql_from_history(history: list) -> str:
+    """Extract the most recently executed SQL string from AIMessage tool_calls."""
+    for m in reversed(history):
+        tool_calls = getattr(m, "tool_calls", None) or []
+        for tc in tool_calls:
+            if tc.get("name") == "execute_sql":
+                args = tc.get("args", {})
+                return args.get("query") or args.get("sql") or ""
+    return ""
+
+
+def _result_table_str(tool_content: Any, max_rows: int = 20) -> str:
+    """Render the SQL result as a plain-text table for the verifier prompt."""
+    text_content = _extract_tool_content(tool_content)
+    if not text_content:
+        return "(no result)"
+    try:
+        payload = json.loads(text_content)
+    except (json.JSONDecodeError, TypeError):
+        return text_content[:500]
+    if not isinstance(payload, dict) or payload.get("status") != "success":
+        return f"(error) {payload.get('error_msg', '')}"
+    rows = payload.get("rows") or []
+    columns = payload.get("columns") or []
+    if not rows:
+        return "(query returned 0 rows)"
+    header = " | ".join(columns)
+    body = "\n".join(
+        " | ".join(str(row.get(c, "")) for c in columns)
+        for row in rows[:max_rows]
+    )
+    suffix = ""
+    total = payload.get("row_count", len(rows))
+    if total > max_rows:
+        suffix = f"\n(showing {max_rows} of {total} rows)"
+    return f"{header}\n{body}{suffix}"
+
+
+def verify_node(state: AgentState) -> dict:
+    """
+    Ask the LLM whether the most recent SQL result correctly answers the user
+    question. Up to _MAX_VERIFY_LOOPS rounds are allowed.
+
+    Verdict CORRECT  → emit the final answer and set verified=True.
+    Verdict RETRY    → inject a corrective HumanMessage so the next llm_node
+                       turn rewrites and re-executes the SQL.
+    """
+    t0 = time.perf_counter()
+    history = state.get("messages", [])
+    verify_calls = state.get("verify_calls", 0)
+
+    # Find the latest successful SQL result
+    successful = [
+        m for m in _tool_messages(history, "execute_sql")
+        if _summarize_sql_result(state["user_query"], m.content) is not None
+    ]
+
+    # Guard: no result to verify — just finalise whatever is in history
+    if not successful:
+        logger.warning("verify_node: no successful SQL result found; skipping verification")
+        summary = _summarize_sql_result(state["user_query"], _tool_messages(history, "execute_sql")[-1].content) \
+            if _tool_messages(history, "execute_sql") else "No query result was returned."
+        return {
+            "messages": [AIMessage(content=summary or "No query result was returned.")],
+            "verify_calls": verify_calls + 1,
+            "verified": True,
+        }
+
+    last_result_msg = successful[-1]
+    sql = _extract_sql_from_history(history)
+    result_table = _result_table_str(last_result_msg.content)
+
+    # Hard cap: if we have exhausted all verify loops, accept the current result
+    if verify_calls >= _MAX_VERIFY_LOOPS:
+        logger.warning(
+            "verify_node: max verification loops (%d) reached; accepting result as-is",
+            _MAX_VERIFY_LOOPS,
+        )
+        summary = _summarize_sql_result(state["user_query"], last_result_msg.content)
+        return {
+            "messages": [AIMessage(content=summary or result_table)],
+            "verify_calls": verify_calls + 1,
+            "verified": True,
+        }
+
+    # Build and call the verifier
+    verifier_prompt = _VERIFY_PROMPT.format(
+        user_query=state["user_query"],
+        sql=sql or "(SQL not captured)",
+        result_table=result_table,
+    )
+    verdict_response = _base_model.invoke([
+        SystemMessage(content=(
+            "You are a strict SQL result verifier. "
+            "Your only job is to decide whether a SQL query result correctly and completely answers the user's question. "
+            "Reply with EXACTLY 'CORRECT: <reason>' or 'RETRY: <reason>'. No other output."
+        )),
+        HumanMessage(content=verifier_prompt),
+    ])
+    verdict_text = (verdict_response.content or "").strip()
+    logger.info(
+        "verify_node [round %d]: verdict=%s  (%.2fs)",
+        verify_calls + 1,
+        verdict_text[:80],
+        time.perf_counter() - t0,
+    )
+
+    if verdict_text.upper().startswith("CORRECT"):
+        # Result is verified — produce the final pretty summary
+        summary = _summarize_sql_result(state["user_query"], last_result_msg.content)
+        explanation = verdict_text.split(":", 1)[-1].strip() if ":" in verdict_text else ""
+        final_answer = summary or result_table
+        if explanation:
+            final_answer += f"\n\n✅ *Verified: {explanation}*"
+        logger.info("verify_node: result verified as CORRECT in round %d", verify_calls + 1)
+        return {
+            "messages": [AIMessage(content=final_answer)],
+            "verify_calls": verify_calls + 1,
+            "verified": True,
+        }
+
+    # RETRY path — extract the reason and inject a corrective instruction
+    retry_reason = verdict_text.split(":", 1)[-1].strip() if ":" in verdict_text else verdict_text
+    correction_msg = HumanMessage(
+        content=(
+            f'The previous SQL result did NOT correctly answer: "{state["user_query"]}"\n'
+            f"Reason: {retry_reason}\n\n"
+            f"The SQL that was run:\n{sql}\n\n"
+            "Please call execute_sql again with a corrected query that fixes the issue described above."
+        )
+    )
+    logger.info("verify_node: RETRY round %d — injecting correction", verify_calls + 1)
+    return {
+        "messages": [correction_msg],
+        "verify_calls": verify_calls + 1,
+        "verified": False,
+    }

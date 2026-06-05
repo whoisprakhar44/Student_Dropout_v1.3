@@ -70,6 +70,60 @@ python -m uvicorn app:app --host 0.0.0.0 --port 8000
 
 ---
 
+## Hive Mode (Production Server)
+
+Switch from SQLite to HiveServer2 for production queries. One flag controls the entire stack — SQL execution, LLM system prompt, and DDL preprocessing all switch together.
+
+### Complete Hive Setup (run in order on the server)
+
+> ⚠️ Do this **every session** before starting the app. Kerberos tickets expire.
+
+```bash
+# 1. Export Hadoop env
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.492.b09-2.el9.x86_64/jre
+export HADOOP_HOME=/usr/local/hadoop-3.3.6
+export HADOOP_CONF_DIR=$HOME/hadoop-configuration
+export PATH=$HADOOP_HOME/bin:$PATH
+export CLASSPATH=$(hadoop classpath --glob)
+
+# 2. Get Kerberos ticket
+kinit <your-principal>
+
+# 3. Validate everything (Java, Hadoop, Kerberos, HDFS, HiveServer2 — 7 checks)
+python MCP/hive_startup_check.py
+
+# 4. Then flip the flag and start
+```
+
+In `.env`, set:
+```
+HIVE_MCP_ENABLED=true
+```
+
+Then start the server (inject vectors first if not already done):
+```bash
+# First time only
+python pipeline.py --config config.yaml
+python pipeline.py --config config.yaml --fewshots school_dropout_fewshots_200.jsonl
+
+# Start
+python -m uvicorn app:app --host 0.0.0.0 --port 8000
+```
+
+### What changes when you flip `HIVE_MCP_ENABLED=true`
+
+| | SQLite (`false`) | Hive (`true`) |
+|---|---|---|
+| SQL execution | `mcp_sql_execution.py` → SQLite | `mcp_hive_execution.py` → HiveServer2 |
+| LLM prompt | "SQLite, no prefix" | "Hive, use `curated_datamodels.table`" |
+| DDL in RAG | Stripped (Iceberg → SQLite types) | Returned as-is |
+
+### KeyError 22 — Handled Automatically
+
+PyHive cannot process `timestamptz` columns (`created_date`, `updated_date`). The execution layer transparently rewrites SQL and casts affected columns to strings in Python — no action needed from users or the LLM. To add more affected columns, edit `execution.timestamptz_columns` in [`MCP/hive_config.yaml`](MCP/hive_config.yaml).
+
+---
+
 > **Prerequisite**: Ollama must be running and `nomic-embed-text` pulled before steps 3–4:
 > ```bash
 > ollama pull nomic-embed-text

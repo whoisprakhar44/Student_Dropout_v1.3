@@ -19,3 +19,9 @@ class AgentState(TypedDict):
 
     # Set when a template SQL fast-path is used (skip extra LLM turns)
     fast_sql: NotRequired[str | None]
+
+    # Tracks how many verification rounds have run (max 5)
+    verify_calls: int
+
+    # True once the LLM confirms the SQL result is correct
+    verified: bool

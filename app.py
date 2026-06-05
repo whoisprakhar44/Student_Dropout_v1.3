@@ -213,6 +213,8 @@ async def ask(payload: AskRequest):
                 "messages": [HumanMessage(content=payload.question)],
                 "retrieved_context": [],
                 "llm_calls": 0,
+                "verify_calls": 0,
+                "verified": False,
             }
         )
         return _extract_sql_and_result(state.get("messages", []))

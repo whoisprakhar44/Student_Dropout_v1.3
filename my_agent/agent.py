@@ -2,7 +2,11 @@
 agent.py
 --------
 Constructs and compiles the LangGraph agent.
-Graph flow: START -> llm_node <-> tool_node -> END
+
+Graph flow:
+  START → llm_node ↔ tool_node → verify_node → END
+                                      ↓ (RETRY)
+                                   llm_node (re-generate SQL)
 """
 import asyncio
 from typing import Literal
@@ -10,17 +14,42 @@ from typing import Literal
 from langchain_core.messages import HumanMessage
 from langgraph.graph import END, START, StateGraph
 
-from my_agent.utils.nodes import build_tool_node, llm_node
+from my_agent.utils.nodes import build_tool_node, llm_node, verify_node
 from my_agent.utils.state import AgentState
 from my_agent.utils.tools import cleanup_tools, init_tools
 
 
-def should_continue(state: AgentState) -> Literal["tool_node", "__end__"]:
-    """Route to tool_node if the LLM emitted tool calls, otherwise stop."""
+def should_continue(state: AgentState) -> Literal["tool_node", "verify_node", "__end__"]:
+    """
+    After llm_node:
+    - If the LLM emitted tool calls → run the tools.
+    - If verified is True (verify_node already confirmed the answer) → stop.
+    - Otherwise → stop (no tool calls and not yet verified means a plain answer).
+    """
     last_message = state["messages"][-1]
     if getattr(last_message, "tool_calls", None):
         return "tool_node"
     return END
+
+
+def after_tool_node(state: AgentState) -> Literal["verify_node", "llm_node"]:
+    """
+    After tool_node executes:
+    - Always go to verify_node so the result can be checked.
+    - verify_node will decide whether to emit a final answer or loop back.
+    """
+    return "verify_node"
+
+
+def after_verify_node(state: AgentState) -> Literal["llm_node", "__end__"]:
+    """
+    After verify_node:
+    - CORRECT (verified=True) → stop; the final AIMessage is already in state.
+    - RETRY   (verified=False) → loop back to llm_node to re-generate SQL.
+    """
+    if state.get("verified", False):
+        return END
+    return "llm_node"
 
 
 async def build_graph():
@@ -34,14 +63,30 @@ async def build_graph():
     builder = StateGraph(AgentState)
     builder.add_node("llm_node", llm_node)
     builder.add_node("tool_node", tool_node)
+    builder.add_node("verify_node", verify_node)
 
     builder.add_edge(START, "llm_node")
+
+    # llm_node → tool_node (tool call) or END (plain answer)
     builder.add_conditional_edges(
         "llm_node",
         should_continue,
         ["tool_node", END],
     )
-    builder.add_edge("tool_node", "llm_node")
+
+    # tool_node always goes to verify_node
+    builder.add_conditional_edges(
+        "tool_node",
+        after_tool_node,
+        ["verify_node"],
+    )
+
+    # verify_node → END (correct) or llm_node (retry)
+    builder.add_conditional_edges(
+        "verify_node",
+        after_verify_node,
+        ["llm_node", END],
+    )
 
     graph = builder.compile()
     print("Agent graph compiled successfully.")
@@ -57,6 +102,8 @@ async def main():
             "messages": [HumanMessage(content=user_query)],
             "retrieved_context": [],
             "llm_calls": 0,
+            "verify_calls": 0,
+            "verified": False,
         }
     )
 
@@ -65,7 +112,9 @@ async def main():
     print("=" * 60)
     for message in result["messages"]:
         message.pretty_print()
-    print(f"\nLLM calls made: {result['llm_calls']}")
+    print(f"\nLLM calls made:    {result['llm_calls']}")
+    print(f"Verify loops run:  {result['verify_calls']}")
+    print(f"Verified:          {result['verified']}")
 
     await cleanup_tools()
 

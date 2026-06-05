@@ -1,0 +1,27 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Hive Execution Layer — Infrastructure Config
+#  All values here are overridable via environment variables in .env
+# ─────────────────────────────────────────────────────────────────────────────
+
+hive:
+  host: dl-dev-cl-mn02.datalake-dev.local
+  port: 10000
+  auth: KERBEROS
+  kerberos_service_name: hive
+  database: curated_datamodels        # default database for SHOW TABLES etc.
+
+hadoop:
+  home: /usr/local/hadoop-3.3.6
+  conf_dir: ~/hadoop-configuration    # must contain core-site.xml, hdfs-site.xml
+
+execution:
+  query_timeout_seconds: 300
+
+  # ── KeyError 22 workaround ──────────────────────────────────────────────────
+  # PyHive cannot process Hive's internal type code 22 (timestamptz).
+  # Any column listed here will have its fetched value cast to str in Python
+  # AFTER the query returns — transparent to the LLM and users.
+  # Add new column names here if more timestamptz columns are discovered.
+  timestamptz_columns:
+    - created_date
+    - updated_date

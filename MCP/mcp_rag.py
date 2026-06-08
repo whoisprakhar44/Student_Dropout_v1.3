@@ -151,7 +151,7 @@ class VectorDB:
                     "table_name": hit["entity"]["table_name"],
                     "raw_ddl": hit["entity"]["raw_ddl"],
                     "embedding_text": hit["entity"]["embedding_text"],
-                    "score": hit["distance"]
+                    "score": 1.0 - hit["distance"]
                 }
                 for hit in res[0]
             ]

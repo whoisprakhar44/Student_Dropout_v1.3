@@ -14,7 +14,7 @@ from typing import Literal
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.graph import END, START, StateGraph
 
-from my_agent.utils.nodes import build_tool_node, llm_node, verify_node
+from my_agent.utils.nodes import build_tool_node, initialize_node, llm_node, verify_node
 from my_agent.utils.state import AgentState
 from my_agent.utils.tools import cleanup_tools, init_tools
 
@@ -72,11 +72,14 @@ async def build_graph():
     tool_node = build_tool_node()
 
     builder = StateGraph(AgentState)
+    builder.add_node("initialize_node", initialize_node)
     builder.add_node("llm_node", llm_node)
     builder.add_node("tool_node", tool_node)
     builder.add_node("verify_node", verify_node)
 
-    builder.add_edge(START, "llm_node")
+    # Force RAG retrieval tool call on entry, then flow to tool_node
+    builder.add_edge(START, "initialize_node")
+    builder.add_edge("initialize_node", "tool_node")
 
     # llm_node → tool_node (tool call) or END (plain answer)
     builder.add_conditional_edges(

@@ -528,3 +528,31 @@ def verify_node(state: AgentState) -> dict:
         "verify_calls": verify_calls + 1,
         "verified": False,
     }
+
+
+def initialize_node(state: AgentState) -> dict:
+    """
+    Graph entry point: force a retrieval RAG call on the user's raw query.
+    Generates an AIMessage with a tool call to retrive_schema_rag.
+    """
+    import uuid
+    tool_call_id = f"call_{uuid.uuid4().hex}"
+    
+    # Generate the initial forced tool call message
+    forced_tool_call_msg = AIMessage(
+        content="",
+        tool_calls=[{
+            "id": tool_call_id,
+            "name": "retrive_schema_rag",
+            "args": {
+                "query": state["user_query"],
+                "top_k": 5
+            }
+        }]
+    )
+    
+    logger.info("initialize_node: forced start retrieval tool call generated for query: %s", state["user_query"])
+    return {
+        "messages": [forced_tool_call_msg],
+        "llm_calls": 0,
+    }

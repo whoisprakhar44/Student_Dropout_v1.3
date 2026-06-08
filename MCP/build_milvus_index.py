@@ -32,7 +32,7 @@ def resolve_milvus_uri(cfg: dict) -> str:
     uri = cfg["vector_db"]["milvus"]["uri"]
     if uri.startswith(("http://", "https://")) or os.path.isabs(uri):
         return uri
-    return os.path.join(MCP_DIR, uri.lstrip("./"))
+    return os.path.normpath(os.path.join(MCP_DIR, uri))
 
 
 def load_table_chunks(yaml_files: list) -> list[dict]:
@@ -73,6 +73,7 @@ def load_table_chunks(yaml_files: list) -> list[dict]:
             "table_name": table_name,
             "raw_ddl": raw_ddl,
             "embedding_text": embedding_text,
+            "source_file": path,
         })
     return chunks
 
@@ -110,6 +111,7 @@ def load_join_chunks() -> list[dict]:
         "table_name": "__join_relations__",
         "raw_ddl": "",
         "embedding_text": embedding_text,
+        "source_file": str(JOIN_RELATIONS_YAML),
     }]
 
 
@@ -142,6 +144,9 @@ def build_index():
         print(f"No schema chunks to index under {TABLES_DIR}.", file=sys.stderr)
         sys.exit(1)
 
+    import uuid
+    from pymilvus import MilvusClient, DataType
+
     rows = []
     skipped = 0
     for i, chunk in enumerate(chunks):
@@ -155,31 +160,84 @@ def build_index():
             skipped += 1
             continue
         rows.append({
-            "id": i,
-            "vector": vector,
+            "id": str(uuid.uuid4()),
+            "embedding": vector,
             "database_name": chunk["database_name"],
             "table_name": chunk["table_name"],
             "raw_ddl": chunk["raw_ddl"][:65000],
-            "embedding_text": chunk["embedding_text"][:65000],
+            "embedding_text": chunk["embedding_text"][:9900],
+            "source_file": chunk.get("source_file", "unknown"),
         })
     if skipped:
         print(f"  Warning: {skipped} chunk(s) skipped due to embedding errors.", file=sys.stderr)
-
-    from pymilvus import MilvusClient
 
     client = MilvusClient(uri=uri)
     if client.has_collection(collection):
         client.drop_collection(collection)
 
-    client.create_collection(
-        collection_name=collection,
-        dimension=dim,
-        metric_type=cfg["vector_db"]["milvus"].get("metric_type", "COSINE"),
-        auto_id=True,
-        enable_dynamic_field=True,
+    # Replicate pipeline.py collection initialization
+    schema = MilvusClient.create_schema(
+        auto_id=False,
+        enable_dynamic_field=False,
+    )
+    schema.add_field(
+        field_name="id",
+        datatype=DataType.VARCHAR,
+        is_primary=True,
+        max_length=64,
+    )
+    schema.add_field(
+        field_name="database_name",
+        datatype=DataType.VARCHAR,
+        max_length=256,
+    )
+    schema.add_field(
+        field_name="table_name",
+        datatype=DataType.VARCHAR,
+        max_length=256,
+    )
+    schema.add_field(
+        field_name="embedding_text",
+        datatype=DataType.VARCHAR,
+        max_length=10000,
+    )
+    schema.add_field(
+        field_name="raw_ddl",
+        datatype=DataType.VARCHAR,
+        max_length=65535,
+    )
+    schema.add_field(
+        field_name="source_file",
+        datatype=DataType.VARCHAR,
+        max_length=512,
+    )
+    schema.add_field(
+        field_name="embedding",
+        datatype=DataType.FLOAT_VECTOR,
+        dim=dim,
     )
 
-    client.insert(collection_name=collection, data=rows)
+    index_params = MilvusClient.prepare_index_params()
+    index_params.add_index(
+        field_name="embedding",
+        index_type="FLAT",
+        metric_type=cfg["vector_db"]["milvus"].get("metric_type", "COSINE"),
+    )
+
+    client.create_collection(
+        collection_name=collection,
+        schema=schema,
+        index_params=index_params,
+    )
+
+    # Idempotently create schema_store and few_shot_store partitions
+    PARTITION_SCHEMA = "schema_store"
+    PARTITION_FEW_SHOT = "few_shot_store"
+    for part in (PARTITION_SCHEMA, PARTITION_FEW_SHOT):
+        if not client.has_partition(collection_name=collection, partition_name=part):
+            client.create_partition(collection_name=collection, partition_name=part)
+
+    client.insert(collection_name=collection, data=rows, partition_name=PARTITION_SCHEMA)
     client.load_collection(collection)
 
     print(f"Indexed {len(rows)} schema chunks from {TABLES_DIR} and {JOIN_RELATIONS_YAML}")

@@ -11,7 +11,7 @@ Graph flow:
 import asyncio
 from typing import Literal
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.graph import END, START, StateGraph
 
 from my_agent.utils.nodes import build_tool_node, llm_node, verify_node
@@ -35,10 +35,21 @@ def should_continue(state: AgentState) -> Literal["tool_node", "verify_node", "_
 def after_tool_node(state: AgentState) -> Literal["verify_node", "llm_node"]:
     """
     After tool_node executes:
-    - Always go to verify_node so the result can be checked.
-    - verify_node will decide whether to emit a final answer or loop back.
+    - If the LLM called execute_sql, go to verify_node to verify the query outcome.
+    - If it only called schema retrieval, go back to llm_node so it can generate the SQL using the retrieved context.
     """
-    return "verify_node"
+    last_ai_message = None
+    for msg in reversed(state.get("messages", [])):
+        if isinstance(msg, AIMessage) or getattr(msg, "__class__", None).__name__ == "AIMessage":
+            last_ai_message = msg
+            break
+
+    if last_ai_message and getattr(last_ai_message, "tool_calls", None):
+        tool_names = [tc["name"] for tc in last_ai_message.tool_calls]
+        if "execute_sql" in tool_names:
+            return "verify_node"
+
+    return "llm_node"
 
 
 def after_verify_node(state: AgentState) -> Literal["llm_node", "__end__"]:
@@ -74,11 +85,11 @@ async def build_graph():
         ["tool_node", END],
     )
 
-    # tool_node always goes to verify_node
+    # tool_node goes to verify_node or llm_node
     builder.add_conditional_edges(
         "tool_node",
         after_tool_node,
-        ["verify_node"],
+        ["verify_node", "llm_node"],
     )
 
     # verify_node → END (correct) or llm_node (retry)

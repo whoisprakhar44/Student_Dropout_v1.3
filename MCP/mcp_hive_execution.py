@@ -1,7 +1,10 @@
 """
 mcp_hive_execution.py
 ─────────────────────
-MCP server for Hive SQL execution via HiveServer2 (Kerberos auth).
+MCP server for Impala SQL execution (Kerberos/GSSAPI auth).
+
+The class and file names are preserved for backward compatibility.
+Internally this server uses HiveExecutor backed by Impyla + Impala.
 
 Activated when HIVE_MCP_ENABLED=true in .env.
 
@@ -40,13 +43,13 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     force=True,
 )
-logger = logging.getLogger("hive-mcp")
+logger = logging.getLogger("impala-mcp")
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Resolve config path relative to this file (works regardless of CWD)
 # ─────────────────────────────────────────────────────────────────────────────
 
-_HERE       = os.path.dirname(os.path.abspath(__file__))
+_HERE        = os.path.dirname(os.path.abspath(__file__))
 _CONFIG_PATH = os.path.join(_HERE, "hive_config.yaml")
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -58,33 +61,34 @@ _executor = None
 
 if _HIVE_ENABLED:
     try:
-        # Import here so the PyHive dependency is only required when Hive is enabled
+        # HiveExecutor name is preserved for backward compatibility;
+        # it connects to Impala internally via Impyla.
         from hive_executor import HiveExecutor  # type: ignore[import]
         _executor = HiveExecutor(_CONFIG_PATH)
-        logger.info("HiveExecutor ready — Hive MCP server active")
+        logger.info("HiveExecutor (Impala) ready — MCP server active")
     except Exception as exc:
         logger.critical("Failed to initialise HiveExecutor: %s", exc, exc_info=True)
         sys.exit(1)   # fail fast — broken config should surface immediately
 else:
     logger.info(
         "HIVE_MCP_ENABLED is not set to true — "
-        "Hive execution disabled (SQLite mode active)"
+        "Impala execution disabled (local SQLite mode active)"
     )
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  MCP server
 # ─────────────────────────────────────────────────────────────────────────────
 
-mcp = FastMCP("hive-sql-server")
+mcp = FastMCP("impala-sql-server")
 
 
 @mcp.tool()
 def execute_sql(query: str) -> str:
     """
-    Execute a read-only Hive SQL SELECT query against HiveServer2.
+    Execute a read-only Impala SQL SELECT query against the CDP cluster.
 
-    Requires HIVE_MCP_ENABLED=true and a valid Kerberos ticket.
-    Transparently handles PyHive KeyError 22 (timestamptz columns).
+    Requires HIVE_MCP_ENABLED=true and a valid Kerberos ticket (kinit).
+    Supports Iceberg tables via Impala — no Hive compatibility issues.
 
     Returns JSON:
         success → { status, columns, rows, row_count }
@@ -95,9 +99,9 @@ def execute_sql(query: str) -> str:
             "status":     "error",
             "error_type": "not_configured",
             "error_msg": (
-                "Hive execution is disabled. "
+                "Impala execution is disabled. "
                 "Set HIVE_MCP_ENABLED=true in .env and ensure the server has "
-                "Kerberos credentials + HiveServer2 access."
+                "a valid Kerberos ticket and Impala access."
             ),
             "query": query,
         })

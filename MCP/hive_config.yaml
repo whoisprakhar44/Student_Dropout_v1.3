@@ -1,14 +1,18 @@
 # ─────────────────────────────────────────────────────────────────────────────
-#  Hive Execution Layer — Infrastructure Config
-#  All values here are overridable via environment variables in .env
+#  Query Engine — Impala (CDP / Cloudera)
+#  Replaces the legacy hive: section — Impala is now the only execution engine.
+#
+#  All values here are overridable via environment variables in .env.
 # ─────────────────────────────────────────────────────────────────────────────
 
-hive:
-  host: dl-dev-cl-mn02.datalake-dev.local
-  port: 10000
-  auth: KERBEROS
-  kerberos_service_name: hive
-  database: curated_datamodels        # default database for SHOW TABLES etc.
+query_engine:
+  type: impala
+  host: dl-dev-cl-fn01.datalake-dev.local
+  port: 21050
+  database: curated_datamodels        # used by health-check Iceberg read
+
+  kerberos:
+    service_name: impala              # passed as kerberos_service_name to Impyla
 
 hadoop:
   home: /usr/local/hadoop-3.3.6
@@ -17,35 +21,14 @@ hadoop:
 execution:
   query_timeout_seconds: 300
 
-  # ── Session settings (applied once per Hive connection) ─────────────────────
+  # ── Optional Impala session-scoped SET statements ────────────────────────────
   #
-  # CDP/Cloudera Iceberg vectorized reader incompatibility
-  # ──────────────────────────────────────────────────────
-  # The CDP cluster contains a runtime incompatibility in the Iceberg vectorized
-  # reader path that manifests as:
+  # These are sent once immediately after every connection (and every reconnect).
+  # Impyla passes each statement verbatim to Impala before the first user query.
   #
-  #   java.lang.NoSuchMethodError:
-  #       org.apache.iceberg.parquet.ParquetSchemaUtil.hasIds(
-  #           org.apache.parquet.schema.MessageType)
+  # Example Impala session settings:
+  #   - "SET REQUEST_POOL=my_pool"
+  #   - "SET MEM_LIMIT=4g"
   #
-  # Root cause: version skew between the cluster's Iceberg JAR and Parquet JAR
-  # in the vectorized code path.  This is a cluster-side issue that cannot be
-  # fixed from the client.
-  #
-  # Workaround: disable Hive vectorized execution for this session.
-  # HiveExecutor sends every statement below immediately after connection
-  # establishment (and after every automatic reconnect).
-  #
-  # Add additional session-scoped SET statements here as needed — no code
-  # changes required.
-  session_settings:
-    - "SET hive.vectorized.execution.enabled=false"
-
-  # ── KeyError 22 workaround ──────────────────────────────────────────────────
-  # PyHive cannot process Hive's internal type code 22 (timestamptz).
-  # Any column listed here will have its fetched value cast to str in Python
-  # AFTER the query returns — transparent to the LLM and users.
-  # Add new column names here if more timestamptz columns are discovered.
-  timestamptz_columns:
-    - created_date
-    - updated_date
+  # Leave as an empty list if no session configuration is required.
+  session_settings: []

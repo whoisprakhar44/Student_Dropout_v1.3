@@ -79,22 +79,26 @@ One collection (`schema_chunks`) with two named partitions:
 Each line must have at minimum `id`, `question`, `sql`. Optional fields `use_case` and
 `intent` are mapped to `database_name` and `table_name` for downstream filtering.
 
-## 3. Hive Execution Layer (`MCP/`)
+## 3. Impala Execution Layer (`MCP/`)
 
-When `HIVE_MCP_ENABLED=true`, the agent executes SQL against HiveServer2 using PyHive
-with Kerberos authentication.  All Hive-related code lives in `MCP/`.
+When `HIVE_MCP_ENABLED=true`, the agent executes SQL against Impala on CDP using
+Impyla with Kerberos (GSSAPI) authentication.  All execution-layer code lives in `MCP/`.
 
-### New Files
+### Files
 
-    MCP/hive_config.yaml         All infrastructure values (host, port, timeout,
-                                 timestamptz_columns). Nothing hardcoded in Python.
+    MCP/hive_config.yaml         All infrastructure values (host, port, timeout).
+                                 Uses `query_engine:` as the canonical section.
+                                 Nothing is hardcoded in Python.
 
-    MCP/hive_executor.py         HiveExecutor class — the core execution engine:
-                                   • Lazy connect + auto-reconnect via PyHive
+    MCP/hive_executor.py         HiveExecutor class — the core execution engine
+                                 (name preserved for import compatibility):
+                                   • Impyla connect with GSSAPI/Kerberos auth
+                                   • Lazy connect + auto-reconnect
                                    • SQL validation (SELECT-only guard)
-                                   • SQL Rewrite Layer (see below)
-                                   • Query timeout via threading
+                                   • Query timeout via threading + cursor.cancel()
                                    • Structured JSON result (same contract as SQLite MCP)
+                                 No PyHive code, type patches, or timestamp workarounds.
+                                 Impyla returns native datetime.date / datetime.datetime.
 
     MCP/hive_startup_check.py    7-step pre-flight validator. Run before app start:
                                    python MCP/hive_startup_check.py
@@ -104,33 +108,27 @@ with Kerberos authentication.  All Hive-related code lives in `MCP/`.
                                    3. HADOOP_CONF_DIR has core-site.xml, hdfs-site.xml
                                    4. Kerberos ticket valid (klist)
                                    5. HDFS reachable (hdfs dfs -ls /)
-                                   6. HiveServer2 TCP port open
-                                   7. Hive query (SHOW DATABASES) succeeds
+                                   6. Impala TCP port open (21050)
+                                   7. Impala connectivity: SELECT 1, SHOW DATABASES,
+                                      and Iceberg table read validation
 
     MCP/mcp_hive_execution.py    MCP server — wraps HiveExecutor as the execute_sql
                                  tool. Guarded by HIVE_MCP_ENABLED; returns a clear
                                  error when disabled (safe for local SQLite dev).
 
-### SQL Rewrite Layer — KeyError 22 Workaround
+### Iceberg Compatibility
 
-PyHive cannot process Hive's internal type code 22 (timestamptz). Affected columns
-currently: `created_date`, `updated_date`.
+Iceberg tables were previously accessed through Hive, which caused runtime failures:
 
-Two-stage transparent fix (users and LLM never see it):
+    java.lang.NoSuchMethodError: org.apache.iceberg.parquet.ParquetSchemaUtil.hasIds(...)
 
-  Stage 1 — SQL rewrite (explicit SELECT lists):
-    created_date  →  CAST(created_date AS STRING) AS created_date
-
-  Stage 2 — Post-fetch Python cast (covers SELECT *):
-    After PyHive returns rows, any value under a timestamptz column key is cast
-    to str() in Python before the result is returned.
-
-To add new timestamptz columns, add them to `execution.timestamptz_columns` in
-`MCP/hive_config.yaml`. No code changes required.
+Root cause: Iceberg/Parquet JAR version skew in the Hive vectorized execution path.
+Resolution: Impala accesses the same Iceberg tables without this issue — no client-side
+workarounds required.
 
 ### Runtime Environment (server only)
 
-The following must be set in the shell before starting the app with Hive enabled:
+The following must be set in the shell before starting the app with Impala enabled:
 
     export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.492.b09-2.el9.x86_64/jre
     export HADOOP_HOME=/usr/local/hadoop-3.3.6
@@ -140,7 +138,7 @@ The following must be set in the shell before starting the app with Hive enabled
 
 These are also documented in `.env` for reference.
 
-### Deployment Steps (Hive mode)
+### Deployment Steps (Impala mode)
 
     # 1. kinit to get a Kerberos ticket
     kinit <your-principal>
@@ -148,17 +146,18 @@ These are also documented in `.env` for reference.
     # 2. Run pre-flight checks
     python MCP/hive_startup_check.py
 
-    # 3. Enable Hive mode
+    # 3. Enable Impala mode
     # In .env: HIVE_MCP_ENABLED=true
 
     # 4. Inject schemas + few-shots into Milvus (first time only)
-    python pipeline.py --config config.yaml
+    # Note: Ensure the uvicorn server is stopped first to avoid Milvus locking issues.
+    python MCP/build_milvus_index.py
     python pipeline.py --config config.yaml --fewshots school_dropout_fewshots_200.jsonl
 
     # 5. Start the server
     python -m uvicorn app:app --host 0.0.0.0 --port 8000
 
-## 4. SQLite vs Hive Configuration (`.env`)
+## 4. SQLite vs Impala Configuration (`.env`)
 The database backend is controlled via the `HIVE_MCP_ENABLED` environment variable:
 
 *   **SQLite Mode (`HIVE_MCP_ENABLED=false`)**:
@@ -172,10 +171,10 @@ The database backend is controlled via the `HIVE_MCP_ENABLED` environment variab
         table properties), and replaces Big Data types (`STRING` -> `TEXT`, `BIGINT` ->
         `INTEGER`) to prevent the LLM from writing invalid/unsupported syntax.
 
-*   **Hive Mode (`HIVE_MCP_ENABLED=true`)**:
+*   **Impala Mode (`HIVE_MCP_ENABLED=true`)**:
     *   **Registry**: Loads `MCP/mcp_hive_execution.py`. The tool inside is named `execute_sql`
-        to maintain signature parity with the frontend/agent, but connects to Hive.
-    *   **Prompt**: The system prompt instructs the LLM that the database is Hive/Apache Spark
+        to maintain signature parity with the frontend/agent, but connects to Impala via Impyla.
+    *   **Prompt**: The system prompt instructs the LLM that the database is Impala/Iceberg
         and queries must include table prefixes
         (e.g. `curated_datamodels.citizen_student`).
     *   **RAG Preprocessing**: Schema DDLs and table prefixes are returned exactly as-is from

@@ -32,19 +32,24 @@ One collection (`schema_chunks`) with **two named partitions**:
 
 ## Setup
 
+> [!WARNING]
+> **Milvus Lite Lock Warning**: Milvus Lite places a persistent write-lock on `milvus_schemas.db/LOCK` while the FastAPI server (`uvicorn`) or any background MCP processes are active. You **must** stop the server and any background Python subprocesses before running database initialization or few-shot injection scripts.
+
 ```bash
 # 1. Create and activate virtualenv
 uv venv
 source .venv/bin/activate
 uv pip install -r requirements.txt
 
-# 2. Build SQLite sample database
+# 2. Build SQLite sample database (local dev only)
 python create_schema.py
 
-# 3. Inject table schemas into Milvus  (schema_store partition)
-python pipeline.py --config config.yaml
+# 3. Rebuild the schema and join relations index (into schema_store partition)
+# (Ensure the FastAPI/uvicorn server is stopped)
+python MCP/build_milvus_index.py
 
-# 4. Inject few-shot NL→SQL pairs     (few_shot_store partition)
+# 4. Inject few-shot NL→SQL pairs (into few_shot_store partition)
+# (Ensure the FastAPI/uvicorn server is stopped)
 python pipeline.py --config config.yaml --fewshots school_dropout_fewshots_200.jsonl
 
 # 5. Start the server
@@ -55,14 +60,17 @@ python -m uvicorn app:app --host 0.0.0.0 --port 8000
 
 ## Deploying to Server
 
-On a fresh server, after installing dependencies and pulling Ollama models, run these **once** to build the vector index before starting the API:
+On a fresh server, after installing dependencies and pulling Ollama models, build the vector index before starting the API:
+
+> [!IMPORTANT]
+> Make sure no `uvicorn` or background python processes are running to avoid Milvus locking issues.
 
 ```bash
-# First time only — inject schemas + few-shots into Milvus
-python pipeline.py --config config.yaml
+# First time setup / index rebuild:
+python MCP/build_milvus_index.py
 python pipeline.py --config config.yaml --fewshots school_dropout_fewshots_200.jsonl
 
-# Then start the server
+# Start the server
 python -m uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
@@ -102,8 +110,8 @@ HIVE_MCP_ENABLED=true
 
 Then start the server (inject vectors first if not already done):
 ```bash
-# First time only
-python pipeline.py --config config.yaml
+# First time only (ensure uvicorn is stopped first to avoid database locking)
+python MCP/build_milvus_index.py
 python pipeline.py --config config.yaml --fewshots school_dropout_fewshots_200.jsonl
 
 # Start
@@ -174,28 +182,42 @@ curl -X POST http://localhost:8000/ask \
 Response:
 ```json
 { "sql": "SELECT COUNT(*) FROM citizen_student", "result": [{"COUNT(*)": 1000}] }
+```---
+
+## Agent Flow & Self-Correction
+
+The LangGraph architecture is designed to handle query routing, semantic retrieval, and automatic error healing:
+
 ```
+                      llm_node (reasoning/SQL generation)
+                         │  ▲                 ▲
+                         ▼  │ (tool calls)    │ (RETRY loop)
+                      tool_node ──────────────┘
+                         │
+                         ▼
+                    verify_node ──(CORRECT/MAX LOOPS)──> END
+```
+
+### Self-Correction & SQL Error Routing
+1. **Verification Node**: A dedicated `verify_node` in `my_agent/utils/nodes.py` intercepts SQL execution outcomes.
+2. **Error Recovery**: If `execute_sql` returns a payload with `"status": "error"`, the `verify_node` captures the failure details, formats them into a corrective `HumanMessage` showing the SQL query and execution error, sets `verified=False`, and loops back to `llm_node`.
+3. **Healing Loop**: The LLM reads the execution error (and retrieves schemas using RAG if needed) to generate a corrected query, preventing premature `502 Bad Gateway` API crashes.
+4. **Nudge Logic**: Prevents smaller models (e.g. `2b`) from bypassing tools or responding with plain text instead of executing SQL queries.
 
 ---
 
-## Agent Flow
+## SQLite vs Hive/Impala Mode (`.env`)
 
-```
-START → llm_node ↔ tool_node → END
-                 ↑          ↑
-         retrive_schema_rag  execute_sql
-```
+The database backend is toggled via `HIVE_MCP_ENABLED` in `.env`:
 
-- `retrive_schema_rag` queries Milvus (`schema_store` or both partitions)
-- `execute_sql` runs read-only SELECT against SQLite or Hive
-- Nudge logic re-prompts smaller models (2b) if they skip tool calls
-
----
-
-## SQLite vs Hive (`.env`)
-
-| Variable | SQLite mode | Hive mode |
+| Variable | SQLite mode (`false`) | Hive/Impala mode (`true`) |
 |---|---|---|
-| `HIVE_MCP_ENABLED` | `false` | `true` |
-| SQL dialect | No `db.table` prefix | `curated_datamodels.table` |
-| DDL preprocessing | Strip Iceberg keywords, remap types | Return as-is |
+| **SQL execution** | `mcp_sql_execution.py` → SQLite | `mcp_hive_execution.py` → Impala (via Impyla) |
+| **SQL dialect** | No `db.table` prefix (e.g. `citizen_student`) | Must use `curated_datamodels.` prefix |
+| **DDL preprocessing** | Strips Iceberg keywords, converts types | Returns raw catalog DDL as-is |
+
+### SQL Dialect & Aggregate Constraints
+- **SQLite HAVING Support**: SQLite allows select-list aliases inside the `HAVING` clause (e.g. `HAVING attendance_pct < 55`).
+- **Hive / Impala HAVING Limitation**: Apache Hive and Impala do **not** support select-list aliases in the `HAVING` clause. 
+  - *Incorrect (will fail)*: `SELECT school_name, AVG(present_flag)*100 AS att_pct FROM ... GROUP BY ... HAVING att_pct < 55`
+  - *Correct (repeat computation)*: `SELECT school_name, AVG(present_flag)*100 AS att_pct FROM ... GROUP BY ... HAVING AVG(present_flag)*100 < 55` or wrap in a Common Table Expression (CTE).

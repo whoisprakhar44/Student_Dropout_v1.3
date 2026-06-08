@@ -1,7 +1,7 @@
 """
 hive_startup_check.py
 ─────────────────────
-Pre-flight validator for the Hive runtime environment.
+Pre-flight validator for the Impala runtime environment.
 
 Run standalone on the server before starting the app:
     python MCP/hive_startup_check.py
@@ -16,9 +16,9 @@ Checks performed (in order):
   3. HADOOP_CONF_DIR — contains core-site.xml and hdfs-site.xml
   4. Kerberos ticket — `klist` exits 0  (also validated via HiveExecutor)
   5. HDFS reachable  — `hdfs dfs -ls /` exits 0
-  6. HiveServer2 TCP — socket connect to host:port
-  7. Hive query      — SHOW DATABASES succeeds via HiveExecutor.health_check()
-                        (also validates session settings, e.g. vectorized=false)
+  6. Impala TCP      — socket connect to host:port (21050)
+  7. Impala query    — SELECT 1, SHOW DATABASES, and Iceberg table read
+                        via HiveExecutor.health_check()
 
 Checks 1–6 use only stdlib.  Check 7 delegates entirely to HiveExecutor so
 that the startup script and the live executor share the same diagnostic path.
@@ -38,12 +38,21 @@ import yaml
 #  Config loader
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _load_hive_config() -> dict:
+def _load_config() -> dict:
     cfg_path = Path(__file__).parent / "hive_config.yaml"
     if not cfg_path.exists():
         raise FileNotFoundError(f"hive_config.yaml not found at {cfg_path}")
     with open(cfg_path) as f:
         return yaml.safe_load(f)
+
+
+def _get_engine_section(cfg: dict) -> dict:
+    """Return the query_engine block, with legacy hive: fallback."""
+    if "query_engine" in cfg:
+        return cfg["query_engine"]
+    if "hive" in cfg:
+        return cfg["hive"]   # minimal fallback — host/port keys differ slightly
+    raise KeyError("Config must contain a 'query_engine:' section.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -150,31 +159,31 @@ def check_hdfs(hadoop_home: str) -> str:
     return "hdfs dfs -ls / OK"
 
 
-def check_hiveserver2_tcp(host: str, port: int) -> str:
-    """Check 6: HiveServer2 TCP port is open (socket connect)."""
+def check_impala_tcp(host: str, port: int) -> str:
+    """Check 6: Impala TCP port is open (socket connect)."""
     try:
         with socket.create_connection((host, port), timeout=10):
             pass
     except OSError as exc:
         raise RuntimeError(
-            f"Cannot connect to HiveServer2 at {host}:{port}\n"
+            f"Cannot connect to Impala at {host}:{port}\n"
             f"Error: {exc}\n"
             "Verify the host/port and network access."
         ) from exc
     return f"TCP {host}:{port} reachable"
 
 
-def check_hive_query(host: str, port: int, auth: str, kerberos_service_name: str) -> str:
+def check_impala_query() -> str:
     """
-    Check 7: Delegate to HiveExecutor.health_check() for Hive connectivity.
+    Check 7: Delegate to HiveExecutor.health_check() for Impala connectivity.
 
-    This reuses the live executor's diagnostic logic (Kerberos, TCP, SHOW
-    DATABASES, session settings) rather than duplicating it here.  Any fix
-    applied to HiveExecutor._check_database() is automatically reflected in
-    this startup check.
+    Validates: SELECT 1, SHOW DATABASES, and Iceberg table read via Impala.
+
+    This reuses the live executor's diagnostic logic rather than duplicating it
+    here.  Any fix applied to HiveExecutor is automatically reflected in this
+    startup check.
     """
     try:
-        # Import relative to the MCP directory where this script lives
         import sys
         sys.path.insert(0, str(Path(__file__).parent))
         from hive_executor import HiveExecutor  # type: ignore[import]
@@ -182,7 +191,7 @@ def check_hive_query(host: str, port: int, auth: str, kerberos_service_name: str
         raise RuntimeError(
             f"Cannot import HiveExecutor: {exc}\n"
             "Ensure hive_executor.py is in the same directory as this script "
-            "and all dependencies are installed (pyhive, thrift-sasl, kerberos)."
+            "and all dependencies are installed (impyla, thrift_sasl)."
         ) from exc
 
     try:
@@ -191,20 +200,23 @@ def check_hive_query(host: str, port: int, auth: str, kerberos_service_name: str
     except Exception as exc:
         raise RuntimeError(f"HiveExecutor.health_check() raised: {exc}") from exc
 
-    # Surface sub-check failures as a single RuntimeError so run_all_checks
-    # can catch and display them the same way as the other checks.
+    # Surface sub-check failures as a single RuntimeError
     failures = [
         f"{key}: {result[key]['detail']}"
-        for key in ("kerberos", "hiveserver", "database")
+        for key in ("kerberos", "impala_tcp", "database", "iceberg_read")
         if not result[key]["ok"]
     ]
     if failures:
         raise RuntimeError(
-            "Hive health check failed:\n  " + "\n  ".join(failures)
+            "Impala health check failed:\n  " + "\n  ".join(failures)
         )
 
-    db_detail = result["database"]["detail"]
-    return db_detail
+    # Return a combined summary of the passing sub-checks
+    details = " | ".join(
+        result[k]["detail"]
+        for k in ("database", "iceberg_read")
+    )
+    return details
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -223,37 +235,31 @@ def run_all_checks(raise_on_failure: bool = True) -> bool:
     Returns:
         True if all checks passed, False otherwise.
     """
-    cfg      = _load_hive_config()
-    hive_cfg = cfg["hive"]
-    host     = hive_cfg["host"]
-    port     = int(hive_cfg["port"])
-    auth     = hive_cfg["auth"]
-    ks_name  = hive_cfg.get("kerberos_service_name", "hive")
+    cfg        = _load_config()
+    engine_cfg = _get_engine_section(cfg)
+    host       = engine_cfg["host"]
+    port       = int(engine_cfg.get("port", 21050))
 
     checks = [
-        ("JAVA_HOME",         lambda: check_java_home()),
-        ("HADOOP_HOME",       lambda: check_hadoop_home()),
-        ("HADOOP_CONF_DIR",   lambda: check_hadoop_conf_dir()),
-        ("Kerberos ticket",   lambda: check_kerberos_ticket()),
-        ("HDFS connectivity", lambda: check_hdfs(os.environ.get("HADOOP_HOME", ""))),
-        ("HiveServer2 TCP",   lambda: check_hiveserver2_tcp(host, port)),
-        ("Hive query",        lambda: check_hive_query(host, port, auth, ks_name)),
+        ("JAVA_HOME",           lambda: check_java_home()),
+        ("HADOOP_HOME",         lambda: check_hadoop_home()),
+        ("HADOOP_CONF_DIR",     lambda: check_hadoop_conf_dir()),
+        ("Kerberos ticket",     lambda: check_kerberos_ticket()),
+        ("HDFS connectivity",   lambda: check_hdfs(os.environ.get("HADOOP_HOME", ""))),
+        ("Impala TCP",          lambda: check_impala_tcp(host, port)),
+        ("Impala connectivity", lambda: check_impala_query()),
     ]
 
     all_passed = True
-    hadoop_home = None
 
     print("=" * 60)
-    print("  Hive Runtime Pre-flight Checks")
+    print("  Impala Runtime Pre-flight Checks")
     print("=" * 60)
 
     for name, fn in checks:
-        # Check 5 needs hadoop_home from check 2 result — patch it
         try:
             detail = fn()
             print(f"  ✓  {name:<22}  {detail}")
-            if name == "HADOOP_HOME":
-                hadoop_home = detail
         except RuntimeError as exc:
             print(f"  ✗  {name:<22}  FAILED")
             print(f"         {exc}")
@@ -270,7 +276,7 @@ def run_all_checks(raise_on_failure: bool = True) -> bool:
 
     print("=" * 60)
     if all_passed:
-        print("  ALL CHECKS PASSED — Hive execution layer ready")
+        print("  ALL CHECKS PASSED — Impala execution layer ready")
     else:
         print("  SOME CHECKS FAILED — fix the above issues before starting")
     print("=" * 60)

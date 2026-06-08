@@ -418,15 +418,45 @@ def verify_node(state: AgentState) -> dict:
         if _summarize_sql_result(state["user_query"], m.content) is not None
     ]
 
-    # Guard: no result to verify — just finalise whatever is in history
-    if not successful:
-        logger.warning("verify_node: no successful SQL result found; skipping verification")
-        summary = _summarize_sql_result(state["user_query"], _tool_messages(history, "execute_sql")[-1].content) \
-            if _tool_messages(history, "execute_sql") else "No query result was returned."
+    # Guard: no SQL execution was even attempted (e.g. LLM answered directly)
+    sql_attempts = _tool_messages(history, "execute_sql")
+    if not sql_attempts:
+        logger.info("verify_node: no SQL query was executed; skipping verification")
         return {
-            "messages": [AIMessage(content=summary or "No query result was returned.")],
+            "messages": [AIMessage(content="No query result was returned.")],
             "verify_calls": verify_calls + 1,
             "verified": True,
+        }
+
+    # If SQL was attempted, but none were successful, we have a failed SQL execution
+    if not successful:
+        last_attempt = sql_attempts[-1]
+        try:
+            text_content = _extract_tool_content(last_attempt.content)
+            payload = json.loads(text_content) if text_content else {}
+            error_msg = payload.get("error_msg") or "Unknown execution error"
+        except (json.JSONDecodeError, TypeError, ValueError):
+            error_msg = "Unknown execution error"
+            
+        sql = _extract_sql_from_history(history)
+        
+        correction_msg = HumanMessage(
+            content=(
+                f"The previous SQL query failed to execute with the following error:\n"
+                f"{error_msg}\n\n"
+                f"The SQL that was run:\n{sql}\n\n"
+                "Please correct the query syntax or column names, verify them against the schema, "
+                "and call execute_sql again with the corrected query."
+            )
+        )
+        logger.warning(
+            "verify_node: SQL failed execution (error: %s). Routing back to LLM for correction.",
+            error_msg,
+        )
+        return {
+            "messages": [correction_msg],
+            "verify_calls": verify_calls + 1,
+            "verified": False,
         }
 
     last_result_msg = successful[-1]

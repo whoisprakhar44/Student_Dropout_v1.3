@@ -55,11 +55,15 @@ def main():
 
     cursor = conn.cursor()
 
-    # Set execution time limit to prevent queries from hanging the test runner
+    # Set execution time limit and join distribution mode to prevent queries from hanging
     try:
         cursor.execute("SET EXEC_TIME_LIMIT_S=30")
     except Exception as e:
         print(f"Warning setting EXEC_TIME_LIMIT_S: {e}")
+    try:
+        cursor.execute("SET DEFAULT_JOIN_DISTRIBUTION_MODE='SHUFFLE'")
+    except Exception as e:
+        print(f"Warning setting DEFAULT_JOIN_DISTRIBUTION_MODE: {e}")
 
     for idx, line in enumerate(lines, 1):
         if not line.strip():

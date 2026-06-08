@@ -4,9 +4,9 @@ Verify all few-shot SQL queries against the production Impala database.
 """
 
 import json
-import os
 import sys
 from pathlib import Path
+import yaml
 
 # Paths
 ROOT_DIR = Path(__file__).resolve().parent
@@ -18,6 +18,20 @@ def main():
         print(f"Error: fewshots file not found at {FEWSHOTS_PATH}")
         sys.exit(1)
 
+    config_path = MCP_DIR / "hive_config.yaml"
+    if not config_path.is_file():
+        print(f"Error: hive_config.yaml not found at {config_path}")
+        sys.exit(1)
+
+    # Read config
+    with open(config_path, "r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+
+    query_engine = cfg.get("query_engine", {})
+    host = query_engine.get("host")
+    port = int(query_engine.get("port", 21050))
+    kerberos_service_name = query_engine.get("kerberos", {}).get("service_name", "impala")
+
     print(f"Loading few-shots from: {FEWSHOTS_PATH}")
     lines = FEWSHOTS_PATH.read_text(encoding="utf-8").splitlines()
 
@@ -25,30 +39,21 @@ def main():
     passed = 0
     failed = 0
 
-    print("Running verification on Impala...")
-    # Insert MCP path into sys.path to import HiveExecutor
-    if str(MCP_DIR) not in sys.path:
-        sys.path.insert(0, str(MCP_DIR))
-    
+    print(f"Connecting to Impala at {host}:{port} using GSSAPI (service={kerberos_service_name})...")
     try:
-        from hive_executor import HiveExecutor
-    except ImportError as e:
-        print(f"Error importing HiveExecutor: {e}. Make sure you run inside the virtualenv and dependencies are installed.")
-        sys.exit(1)
-
-    config_path = MCP_DIR / "hive_config.yaml"
-    if not config_path.is_file():
-        print(f"Error: hive_config.yaml not found at {config_path}")
-        sys.exit(1)
-
-    print("Initializing HiveExecutor (Impala)...")
-    # Ensure HIVE_MCP_ENABLED is set to allow initialization if needed
-    os.environ["HIVE_MCP_ENABLED"] = "true"
-    try:
-        executor = HiveExecutor(str(config_path))
+        from impala.dbapi import connect
+        conn = connect(
+            host=host,
+            port=port,
+            auth_mechanism="GSSAPI",
+            kerberos_service_name=kerberos_service_name
+        )
     except Exception as e:
-        print(f"Error initializing connection to Impala: {e}")
+        print(f"Error connecting to Impala: {e}")
+        print("Make sure you are running inside the virtualenv and have valid Kerberos tickets (kinit).")
         sys.exit(1)
+
+    cursor = conn.cursor()
 
     for idx, line in enumerate(lines, 1):
         if not line.strip():
@@ -71,29 +76,21 @@ def main():
 
         # Execute query verbatim
         try:
-            res_str = executor.execute(sql)
-            res = json.loads(res_str)
-            if res.get("status") == "success":
-                passed += 1
-                # print(f"[OK] {qid}")
-            else:
-                failed += 1
-                print(f"\n[FAIL] {qid}")
-                print(f"Question: {data.get('question')}")
-                print(f"Error: {res.get('error_msg')}")
-                print("SQL Query executed:")
-                print(sql)
-                print("-" * 60)
+            cursor.execute(sql)
+            cursor.fetchall()
+            passed += 1
+            # print(f"[OK] {qid}")
         except Exception as e:
             failed += 1
             print(f"\n[FAIL] {qid}")
             print(f"Question: {data.get('question')}")
-            print(f"Exception during execution: {e}")
+            print(f"Error: {e}")
             print("SQL Query executed:")
             print(sql)
             print("-" * 60)
 
-    executor.close()
+    cursor.close()
+    conn.close()
 
     print("\n" + "=" * 40)
     print("Verification Summary:")

@@ -1,6 +1,6 @@
 {
-  "active_wal_number": 3,
-  "current_seq": 335,
+  "active_wal_number": 5,
+  "current_seq": 737,
   "index_specs": {
     "embedding": {
       "build_params": {},
@@ -18,7 +18,9 @@
     },
     "few_shot_store": {
       "data_files": [
-        "data/data_000135_000335.parquet"
+        "data/data_000135_000335.parquet",
+        "data/data_000336_000536.parquet",
+        "data/data_000537_000737.parquet"
       ],
       "delta_files": []
     },
@@ -30,5 +32,5 @@
     }
   },
   "schema_version": 1,
-  "version": 5
+  "version": 7
 }

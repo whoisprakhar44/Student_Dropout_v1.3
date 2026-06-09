@@ -2254,7 +2254,8 @@ description: Curated Hive/Iceberg data model organized by HDFS location domains 
     description: Updated by.
   primary_key:
   - citizen_health_schemes_pk
-  relationships: []
+  relationships:
+  - citizen_health_schemes.citizen_master_fk is a foreign-key-style reference to citizen_master.citizen_master_pk, which can be linked to citizen_student.student_citizen_master_id_fk.
   business_terms:
   - curated datamodels
   - canonicalmodel
@@ -4171,7 +4172,8 @@ description: Curated Hive/Iceberg data model organized by HDFS location domains 
     description: Updated by.
   primary_key:
   - citizen_welfare_schemes_pk
-  relationships: []
+  relationships:
+  - citizen_welfare_schemes.citizen_master_fk is a foreign-key-style reference to citizen_master.citizen_master_pk, which can be linked to citizen_student.student_citizen_master_id_fk.
   business_terms:
   - curated datamodels
   - canonicalmodel

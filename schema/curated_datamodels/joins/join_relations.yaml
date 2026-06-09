@@ -424,3 +424,18 @@ joins:
   to_column: card_type_id
   cardinality: many_to_one
   usage: Group ration card families by card type.
+- name: citizen_health_scheme_to_student
+  from_table: citizen_health_schemes
+  from_column: citizen_master_fk
+  to_table: citizen_student
+  to_column: student_citizen_master_id_fk
+  cardinality: many_to_one
+  usage: Join health scheme enrollment directly to student profiles via citizen master ID.
+- name: citizen_welfare_scheme_to_student
+  from_table: citizen_welfare_schemes
+  from_column: citizen_master_fk
+  to_table: citizen_student
+  to_column: student_citizen_master_id_fk
+  cardinality: many_to_one
+  usage: Join welfare scheme enrollment directly to student profiles via citizen master ID.
+

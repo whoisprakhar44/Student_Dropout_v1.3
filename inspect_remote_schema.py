@@ -19,9 +19,9 @@ def main():
         executor = HiveExecutor(str(config_path))
         print("Connected to Impala.")
         
-        # Select one row from citizen_family_master
-        print("\n--- Selecting 1 row from curated_datamodels.citizen_family_master ---")
-        res1 = executor.execute("SELECT * FROM curated_datamodels.citizen_family_master LIMIT 1;")
+        # Select one row from scheme_benefits_fact
+        print("\n--- Selecting 1 row from curated_datamodels.scheme_benefits_fact ---")
+        res1 = executor.execute("SELECT * FROM curated_datamodels.scheme_benefits_fact LIMIT 1;")
         payload1 = json.loads(res1)
         if payload1.get("status") == "success":
             rows = payload1.get("rows", [])
@@ -33,7 +33,7 @@ def main():
             else:
                 print("No rows found.")
         else:
-            print("Error querying family table:", payload1.get("error_msg"))
+            print("Error querying scheme_benefits_fact:", payload1.get("error_msg"))
 
     except Exception as e:
         print("Error during execution:", e)

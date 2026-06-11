@@ -51,7 +51,7 @@ One collection (`schema_chunks`) with two named partitions:
     python pipeline.py --config config.yaml
 
     # Inject few-shot NL→SQL pairs
-    python pipeline.py --config config.yaml --fewshots school_dropout_fewshots_200.jsonl
+    python pipeline.py --config config.yaml --fewshots school_dropout_fewshots_combined.jsonl
 
     # Override YAML directory
     python pipeline.py --config config.yaml --yaml_dir ./schema/curated_datamodels/tables
@@ -168,7 +168,7 @@ These are also documented in `.env` for reference.
     # 4. Inject schemas + few-shots into Milvus (first time only)
     # Note: Ensure the uvicorn server is stopped first to avoid Milvus locking issues.
     python MCP/build_milvus_index.py
-    python pipeline.py --config config.yaml --fewshots school_dropout_fewshots_200.jsonl
+    python pipeline.py --config config.yaml --fewshots school_dropout_fewshots_combined.jsonl
 
     # 5. Start the server
     python -m uvicorn app:app --host 0.0.0.0 --port 8000
@@ -257,4 +257,4 @@ Here is exactly what happens from the moment a user submits a query (e.g., via `
 *   `my_agent/utils/tools.py`      Configures and spawns MCP subprocesses.
 *   `MCP/mcp_rag.py`               MCP server for RAG schema lookup and SQLite normalization logic.
 *   `MCP/build_milvus_index.py`    Legacy vectorizer (superseded by pipeline.py).
-*   `school_dropout_fewshots_200.jsonl`  200 NL→SQL few-shot exemplars for the school dropout domain.
+*   `school_dropout_fewshots_combined.jsonl`  50 NL→SQL few-shot exemplars (deduplicated & combined) for the school dropout domain.

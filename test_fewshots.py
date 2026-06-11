@@ -10,7 +10,7 @@ import yaml
 
 # Paths
 ROOT_DIR = Path(__file__).resolve().parent
-FEWSHOTS_PATH = ROOT_DIR / "school_dropout_fewshots_200.jsonl"
+FEWSHOTS_PATH = ROOT_DIR / "school_dropout_fewshots_combined.jsonl"
 MCP_DIR = ROOT_DIR / "MCP"
 
 def main():

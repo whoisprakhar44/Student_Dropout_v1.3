@@ -267,7 +267,16 @@ def llm_node(state: AgentState) -> dict:
 
     system_message = SystemMessage(content=SYSTEM_PROMPT)
     messages_for_llm = [system_message] + history
-    response = _get_model().invoke(messages_for_llm)
+    
+    rag_results = _tool_messages(history, "retrive_schema_rag")
+    if rag_results:
+        messages_for_llm.append(SystemMessage(content="You have already retrieved the schema context. You MUST call execute_sql now. Do NOT ask for schema again."))
+        sql_only_tools = [t for t in tool_registry.execution_tools if getattr(t, "name", getattr(t, "__name__", "")) == "execute_sql"]
+        model = _base_model.bind_tools(sql_only_tools)
+    else:
+        model = _get_model()
+        
+    response = model.invoke(messages_for_llm)
     llm_steps = 1
 
     # Retry 1: model answered without calling any tool at all.

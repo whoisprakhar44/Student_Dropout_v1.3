@@ -7,7 +7,7 @@ from pathlib import Path
 
 # Paths
 ROOT_DIR = Path(__file__).resolve().parent
-FEWSHOTS_PATH = ROOT_DIR / "school_dropout_fewshots_200.jsonl"
+FEWSHOTS_PATH = ROOT_DIR / "school_dropout_fewshots_combined.jsonl"
 ASK_URL = "http://localhost:8000/ask"
 
 def main():

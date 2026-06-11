@@ -1,7 +1,7 @@
 database: curated_datamodels
 title: Curated Hive/Iceberg Data Models
 description: Curated Hive/Iceberg data model organized by HDFS location domains such
-  as school, gsws, canonicalmodel, canonical_model, and CDC/test areas.
+  as school, gsws, and canonicalmodel.
 source_ddl:
 - C:\Users\2797779\Downloads\curated_datamodels_ddls.txt
 full_schema: full_schema.yaml
@@ -26,7 +26,6 @@ tables:
 - citizen_health_schemes
 - citizen_health_schemes_master
 - citizen_idty
-- citizen_idty_test
 - citizen_idty_type
 - citizen_land
 - citizen_master
@@ -37,48 +36,9 @@ tables:
 - citizen_utility_connection
 - citizen_welfare_schemes
 - citizen_welfare_schemes_master
-- core_ittracker_count_tab_map
-- core_ittracker_count_tab_map_test
-- core_ittracker_data
-- core_ittracker_data_tab_map_raw_cdc
-- core_ittracker_data_tab_map_test
-- core_temple_auvs_raw_cdc
-- core_temple_auvs_summary_tab
-- core_temple_auvs_summary_tab_test
 - core_temple_auvs_summary_tab_test_dummy
 - core_temple_ddns
-- core_temple_ddns_raw_cdc
-- core_temple_ddns_test
-- core_temple_ddrf
-- core_temple_ddrf_raw_cdc
-- core_temple_ddrf_test
 - core_temple_ddrf_test_dummy
-- dlake_employee_master_no_pkey
-- dlake_employee_master_no_pkey1
-- dlake_employee_master_no_pkey1_cdc_raw
-- dlake_employee_master_no_pkey_cdc_raw
-- dlake_employee_master_pkey
-- dlake_employee_master_pkey1
-- dlake_employee_master_pkey1_cdc_raw
-- dlake_employee_master_pkey_cdc_raw
-- dlake_employee_master_pkey_new
-- dlake_employee_master_pkey_new_cdc_raw
-- dlake_temp_data_nopkey_1
-- dlake_temp_data_nopkey_1_cdc_raw
-- dlake_temp_data_nopkey_cdc_raw
-- dlake_temp_data_pkey_cdc_raw
-- emp_mst_no_pk2_cdc_raw
-- emp_mst_no_pk2_cdc_test
-- emp_mst_no_pk_cdc_raw
-- emp_mst_no_pk_cdc_test
-- emp_mst_npk_cdc_test
-- emp_mst_pk2_cdc_raw
-- emp_mst_pk2_cdc_test
-- emp_mst_pk_cdc_raw
-- emp_mst_pk_cdc_test
-- employee_cdc_poc1
-- employee_master_no_pk_cdc_raw
-- employee_master_pk_cdc_raw
 - govt_emp_data
 - gsws_caste_religion_master
 - gsws_cluster_master
@@ -107,22 +67,10 @@ tables:
 - mid_day_meal_serving_fact
 - nutrition_item_dim
 - oracle_temp_data_nopkey_1_dummy
-- pgsql_employee_data_cdc_hist
-- pgsql_employee_data_new_test
-- pgsql_employee_data_np_raw_cdc
-- pgsql_employee_data_pk_dummy
-- pgsql_employee_data_raw_cdc
-- pgsql_employee_data_raw_cdc_dummy
-- pgsql_employee_data_test
-- pgsql_employee_data_test_new_npk
-- pgsql_employee_data_test_npk
-- pgsql_employee_data_testing
 - ration_card_citizen
 - ration_card_citizen_reason
 - ration_card_family
 - ration_card_type
-- rtgs_process_log
-- rtgs_process_log_metadata
 - scheme_benefits_fact
 - school_academic_performance_fact
 - school_category
@@ -136,7 +84,6 @@ tables:
 - school_subject_master
 - school_teacher_attendance_fact
 - secretariate_employee_details
-- sims_schattd_test
 - source_department_code
 - student_class_dim
 - welfare_schemes_life_cycle

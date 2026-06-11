@@ -438,4 +438,101 @@ joins:
   to_column: student_citizen_master_id_fk
   cardinality: many_to_one
   usage: Join welfare scheme enrollment directly to student profiles via citizen master ID.
-
+- name: student_to_subject
+  from_table: citizen_student
+  from_column: student_subject_id_fk
+  to_table: school_subject_master
+  to_column: subject_pk
+  cardinality: many_to_one
+  usage: Join student records to subject master details.
+- name: school_to_teacher
+  from_table: citizen_school
+  from_column: school_teacher_id_fk
+  to_table: citizen_school_teacher
+  to_column: citizen_school_teacher_id_pk
+  cardinality: many_to_one
+  usage: Join school records to their assigned teacher (or headmaster).
+- name: infrastructure_progress_to_scheme
+  from_table: school_infrastructure_progress_fact
+  from_column: scheme_id_fk
+  to_table: school_scheme_master
+  to_column: school_scheme_dim_id_pk
+  cardinality: many_to_one
+  usage: Join infrastructure projects to their funding scheme.
+- name: school_infra_component_to_infrastructure_component
+  from_table: school_infra_component_dim
+  from_column: infrastructure_component_dim_id_fk
+  to_table: infrastructure_component_dim
+  to_column: infrastructure_component_dim_id_pk
+  cardinality: many_to_one
+  usage: Map school infrastructure components to general infrastructure components.
+- name: meal_menu_to_nutrition_item
+  from_table: school_meal_menu_dim
+  from_column: nutrition_item_dim_id_fk
+  to_table: nutrition_item_dim
+  to_column: nutrition_item_dim_id_pk
+  cardinality: many_to_one
+  usage: Map school meal menus to their specific nutrition items.
+- name: academic_performance_to_class
+  from_table: school_academic_performance_fact
+  from_column: student_class_dim_id_fk
+  to_table: student_class_dim
+  to_column: student_class_dim_id_pk
+  cardinality: many_to_one
+  usage: Join academic performance to class dimensions to analyze marks by class/grade.
+- name: academic_performance_to_medium
+  from_table: school_academic_performance_fact
+  from_column: school_medium_id_fk
+  to_table: school_medium
+  to_column: school_medium_pk
+  cardinality: many_to_one
+  usage: Join academic performance directly to instruction medium.
+- name: teacher_attendance_to_student
+  from_table: school_teacher_attendance_fact
+  from_column: citizen_student_id_fk
+  to_table: citizen_student
+  to_column: citizen_student_id_pk
+  cardinality: many_to_one
+  usage: Join teacher attendance to student demographics.
+- name: meal_menu_to_meal_type
+  from_table: school_meal_menu_dim
+  from_column: meal_type_dim_id_fk
+  to_table: meal_type_dim
+  to_column: meal_type_dim_id_pk
+  cardinality: many_to_one
+  usage: Join school meal menu to meal type dimension.
+- name: student_attendance_to_medium
+  from_table: school_student_attendance_fact
+  from_column: school_medium_id_fk
+  to_table: school_medium
+  to_column: school_medium_pk
+  cardinality: many_to_one
+  usage: Join student attendance directly to instruction medium.
+- name: infrastructure_progress_to_category
+  from_table: school_infrastructure_progress_fact
+  from_column: infrastructure_category_id_fk
+  to_table: infrastructure_category_dim
+  to_column: infra_category_dim_id_pk
+  cardinality: many_to_one
+  usage: Join infrastructure progress directly to infrastructure categories.
+- name: scheme_benefits_to_beneficiary_type
+  from_table: scheme_benefits_fact
+  from_column: beneficiary_type_id_fk
+  to_table: beneficiary_type_dim
+  to_column: beneficiary_type_dim_id_pk
+  cardinality: many_to_one
+  usage: Join scheme benefits to beneficiary type dimension.
+- name: scheme_benefits_to_teacher
+  from_table: scheme_benefits_fact
+  from_column: school_teacher_id_fk
+  to_table: citizen_school_teacher
+  to_column: citizen_school_teacher_id_pk
+  cardinality: many_to_one
+  usage: Join scheme benefits to teacher profiles to track benefit allocations handled by teachers.
+- name: teacher_to_citizen
+  from_table: citizen_school_teacher
+  from_column: teacher_citizen_master_fk
+  to_table: citizen_master
+  to_column: citizen_master_pk
+  cardinality: one_to_one
+  usage: Join teacher record to citizen master for demographic detail lookups.

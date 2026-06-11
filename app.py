@@ -170,6 +170,9 @@ async def _get_graph():
     return app.state.graph
 
 
+# Global lock to serialize requests and prevent concurrency crashes in Milvus/MCP
+request_lock = asyncio.Lock()
+
 app = FastAPI(
     title="Curated Datamodels API",
     version="1.0.0",
@@ -207,16 +210,19 @@ async def ask(payload: AskRequest):
             )
 
         graph = await _get_graph()
-        state = await graph.ainvoke(
-            {
-                "user_query": payload.question,
-                "messages": [HumanMessage(content=payload.question)],
-                "retrieved_context": [],
-                "llm_calls": 0,
-                "verify_calls": 0,
-                "verified": False,
-            }
-        )
+        
+        # Serialize requests so Milvus Lite and MCP stdio pipes don't crash from concurrency
+        async with request_lock:
+            state = await graph.ainvoke(
+                {
+                    "user_query": payload.question,
+                    "messages": [HumanMessage(content=payload.question)],
+                    "retrieved_context": [],
+                    "llm_calls": 0,
+                    "verify_calls": 0,
+                    "verified": False,
+                }
+            )
         return _extract_sql_and_result(state.get("messages", []))
     except HTTPException:
         raise

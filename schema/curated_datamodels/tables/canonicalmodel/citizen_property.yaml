@@ -44,11 +44,12 @@ columns:
 - name: citizen_property_id_pk
   type: INT
   nullable: true
-  description: Citizen property identifier pk.
+  description: 'Primary Key: Unique identifier for the citizen property record.'
 - name: citizen_master_fk
   type: INT
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: citizen_master_id
   type: STRING
   nullable: true
@@ -72,7 +73,7 @@ columns:
 - name: registration_date
   type: STRING
   nullable: true
-  description: Registration date.
+  description: The specific date or timestamp when the registration occurred.
 - name: market_value
   type: STRING
   nullable: true

@@ -61,19 +61,22 @@ columns:
 - name: citizen_health_schemes_pk
   type: INT
   nullable: true
-  description: Citizen health schemes pk.
+  description: 'Primary Key: Unique identifier for the citizen health schemes record.'
 - name: citizen_health_schemes_master_fk
   type: INT
   nullable: true
-  description: Citizen health schemes master fk.
+  description: 'Foreign Key: Links to the associated citizen health schemes master
+    dimension or master table.'
 - name: citizen_master_citizen_master_fk
   type: INT
   nullable: true
-  description: Citizen master citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master citizen master
+    dimension or master table.'
 - name: citizen_master_fk
   type: INT
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: house_hold_id
   type: STRING
   nullable: true
@@ -81,7 +84,8 @@ columns:
 - name: ration_card_no
   type: STRING
   nullable: true
-  description: Ration card no.
+  description: The unique household ration card number used for public distribution
+    benefits.
 - name: scheme_application_no
   type: STRING
   nullable: true
@@ -89,19 +93,19 @@ columns:
 - name: scheme_registered_date
   type: DATE
   nullable: true
-  description: Scheme registered date.
+  description: The specific date or timestamp when the scheme registered occurred.
 - name: scheme_approved_date
   type: DATE
   nullable: true
-  description: Scheme approved date.
+  description: The specific date or timestamp when the scheme approved occurred.
 - name: scheme_processed_date
   type: DATE
   nullable: true
-  description: Scheme processed date.
+  description: The specific date or timestamp when the scheme processed occurred.
 - name: scheme_last_closed_date
   type: DATE
   nullable: true
-  description: Scheme last closed date.
+  description: The specific date or timestamp when the scheme last closed occurred.
 - name: scheme_amount
   type: STRING
   nullable: true
@@ -117,23 +121,27 @@ columns:
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_health_schemes_pk
 relationships:
-- citizen_health_schemes.citizen_master_fk is a foreign-key-style reference to citizen_master.citizen_master_pk, which can be linked to citizen_student.student_citizen_master_id_fk.
+- citizen_health_schemes.citizen_master_fk is a foreign-key-style reference to citizen_master.citizen_master_pk,
+  which can be linked to citizen_student.student_citizen_master_id_fk.
 business_terms:
 - curated datamodels
 - canonicalmodel

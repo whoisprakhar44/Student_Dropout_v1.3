@@ -106,35 +106,40 @@ columns:
 - name: school_infrastructure_progress_fact_id_pk
   type: BIGINT
   nullable: true
-  description: School infrastructure progress fact identifier primary key.
+  description: 'Primary Key: Unique identifier for the school infrastructure progress
+    fact record.'
 - name: citizen_school_id_pk
   type: BIGINT
   nullable: true
-  description: Citizen school identifier primary key.
+  description: 'Primary Key: Unique identifier for the citizen school record.'
 - name: reporting_date_key_fk
   type: BIGINT
   nullable: true
-  description: Reporting date key foreign key.
+  description: 'Foreign Key: Links to the associated reporting date key dimension
+    or master table.'
 - name: infrastructure_component_id_fk
   type: BIGINT
   nullable: true
-  description: Infrastructure component identifier foreign key.
+  description: 'Foreign Key: Links to the associated infrastructure component dimension
+    or master table.'
 - name: infrastructure_category_id_fk
   type: BIGINT
   nullable: true
-  description: Infrastructure category identifier foreign key.
+  description: 'Foreign Key: Links to the associated infrastructure category dimension
+    or master table.'
 - name: reporting_period_id_fk
   type: BIGINT
   nullable: true
-  description: Reporting period identifier foreign key.
+  description: 'Foreign Key: Links to the associated reporting period dimension or
+    master table.'
 - name: academic_year
   type: STRING
   nullable: true
-  description: Academic year.
+  description: The academic calendar year for the record (e.g., '2024-25').
 - name: scheme_id_fk
   type: BIGINT
   nullable: true
-  description: Scheme identifier foreign key.
+  description: 'Foreign Key: Links to the associated scheme dimension or master table.'
 - name: work_order_no
   type: STRING
   nullable: true
@@ -210,15 +215,15 @@ columns:
 - name: start_date
   type: DATE
   nullable: true
-  description: Start date.
+  description: The specific date or timestamp when the start occurred.
 - name: expected_completion_date
   type: DATE
   nullable: true
-  description: Expected completion date.
+  description: The specific date or timestamp when the expected completion occurred.
 - name: actual_completion_date
   type: DATE
   nullable: true
-  description: Actual completion date.
+  description: The specific date or timestamp when the actual completion occurred.
 - name: delay_days
   type: INT
   nullable: true
@@ -226,7 +231,7 @@ columns:
 - name: delay_reason_code
   type: STRING
   nullable: true
-  description: Delay reason code.
+  description: Standardized system code representing the delay reason.
 - name: school_infrastructure_progress_factcol2
   type: STRING
   nullable: true
@@ -234,23 +239,26 @@ columns:
 - name: is_structurally_certified_flag
   type: STRING
   nullable: true
-  description: Is structurally certified flag.
+  description: Boolean indicator flag for is structurally certified ('Y' for Yes,
+    'N' for No).
 - name: is_safety_compliant_flag
   type: STRING
   nullable: true
-  description: Is safety compliant flag.
+  description: Boolean indicator flag for is safety compliant ('Y' for Yes, 'N' for
+    No).
 - name: is_functional_flag
   type: STRING
   nullable: true
-  description: Is functional flag.
+  description: Boolean indicator flag for is functional ('Y' for Yes, 'N' for No).
 - name: maintenance_required_flag
   type: STRING
   nullable: true
-  description: Maintenance required flag.
+  description: Boolean indicator flag for maintenance required ('Y' for Yes, 'N' for
+    No).
 - name: geo_tagged_flag
   type: STRING
   nullable: true
-  description: Geographic tagged flag.
+  description: Boolean indicator flag for geo tagged ('Y' for Yes, 'N' for No).
 - name: geo_latitude
   type: DECIMAL(9,6)
   nullable: true
@@ -262,7 +270,7 @@ columns:
 - name: last_inspection_date
   type: DATE
   nullable: true
-  description: Last inspection date.
+  description: The specific date or timestamp when the last inspection occurred.
 - name: inspection_score
   type: DECIMAL(5,2)
   nullable: true
@@ -270,7 +278,7 @@ columns:
 - name: inspection_remarks_code
   type: STRING
   nullable: true
-  description: Inspection remarks code.
+  description: Standardized system code representing the inspection remarks.
 primary_key:
 - school_infrastructure_progress_fact_id_pk
 - citizen_school_id_pk

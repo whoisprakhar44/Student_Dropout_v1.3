@@ -76,11 +76,12 @@ columns:
 - name: citizen_master_pk
   type: BIGINT
   nullable: true
-  description: Citizen master pk.
+  description: 'Primary Key: Unique identifier for the citizen master record.'
 - name: citizen_idty_fk
   type: BIGINT
   nullable: true
-  description: Citizen idty fk.
+  description: 'Foreign Key: Links to the associated citizenty dimension or master
+    table.'
 - name: first_name
   type: STRING
   nullable: true
@@ -96,15 +97,15 @@ columns:
 - name: full_name
   type: STRING
   nullable: true
-  description: Full name.
+  description: The complete legal name of the citizen or individual.
 - name: birth_date
   type: STRING
   nullable: true
-  description: Birth date.
+  description: The specific date or timestamp when the birth occurred.
 - name: gender
   type: STRING
   nullable: true
-  description: Gender.
+  description: The gender of the individual (e.g., 'M' for Male, 'F' for Female).
 - name: marital_status
   type: STRING
   nullable: true
@@ -116,7 +117,8 @@ columns:
 - name: status_code
   type: STRING
   nullable: true
-  description: Status code.
+  description: The current operational status code of the record (e.g., 'ACTIVE',
+    'INACTIVE', 'PENDING').
 - name: primary_language
   type: STRING
   nullable: true
@@ -128,7 +130,7 @@ columns:
 - name: deceased_date
   type: STRING
   nullable: true
-  description: Deceased date.
+  description: The specific date or timestamp when the deceased occurred.
 - name: religion
   type: STRING
   nullable: true
@@ -144,19 +146,22 @@ columns:
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_master_pk
 relationships: []

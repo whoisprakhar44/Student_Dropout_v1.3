@@ -57,11 +57,11 @@ columns:
 - name: assessment_dim_id_pk
   type: BIGINT
   nullable: true
-  description: Assessment dim identifier primary key.
+  description: 'Primary Key: Unique identifier for the assessment dim record.'
 - name: assessment_code
   type: STRING
   nullable: true
-  description: Assessment code.
+  description: Standardized system code representing the assessment.
 - name: assessment_type
   type: STRING
   nullable: true
@@ -73,7 +73,7 @@ columns:
 - name: board_code
   type: STRING
   nullable: true
-  description: Board code.
+  description: Standardized system code representing the board.
 - name: grade_scheme
   type: STRING
   nullable: true
@@ -85,15 +85,16 @@ columns:
 - name: is_active
   type: STRING
   nullable: true
-  description: Is active.
+  description: Indicates if the entity is currently active in the system ('Y' for
+    Yes, 'N' for No, or 'ACTIVE'/'INACTIVE').
 - name: effective_start_date
   type: DATE
   nullable: true
-  description: Effective start date.
+  description: The specific date or timestamp when the effective start occurred.
 - name: effective_end_date
   type: DATE
   nullable: true
-  description: Effective end date.
+  description: The specific date or timestamp when the effective end occurred.
 - name: is_current
   type: STRING
   nullable: true
@@ -101,19 +102,22 @@ columns:
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - assessment_dim_id_pk
 relationships: []

@@ -12,11 +12,13 @@ columns:
 - name: citizen_utility_connection_fk
   type: BIGINT
   nullable: true
-  description: Citizen utility connection fk.
+  description: 'Foreign Key: Links to the associated citizen utility connection dimension
+    or master table.'
 - name: citizen_master_fk
   type: STRING
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: gas_connection_status
   type: STRING
   nullable: true
@@ -40,7 +42,8 @@ columns:
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_at
   type: TIMESTAMP
   nullable: true
@@ -48,6 +51,7 @@ columns:
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key: []
 relationships: []

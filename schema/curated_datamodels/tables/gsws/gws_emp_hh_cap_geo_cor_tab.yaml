@@ -46,11 +46,11 @@ columns:
 - name: latitude
   type: BIGINT
   nullable: true
-  description: Latitude.
+  description: The geographical latitude coordinate of the location.
 - name: longitude
   type: BIGINT
   nullable: true
-  description: Longitude.
+  description: The geographical longitude coordinate of the location.
 - name: inserted_by
   type: VARCHAR
   nullable: true
@@ -58,7 +58,7 @@ columns:
 - name: inserted_date
   type: TIMESTAMP
   nullable: true
-  description: Inserted date.
+  description: The specific date or timestamp when the inserted occurred.
 - name: house_type
   type: VARCHAR
   nullable: true
@@ -86,7 +86,8 @@ columns:
 - name: secretariat_code
   type: BIGINT
   nullable: true
-  description: Secretariat code.
+  description: The unique GSWS Secretariat identification code mapping to a specific
+    local governance office.
 - name: mobile_num
   type: BIGINT
   nullable: true

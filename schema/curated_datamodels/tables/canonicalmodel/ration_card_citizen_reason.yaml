@@ -48,7 +48,7 @@ columns:
 - name: reason_code
   type: STRING
   nullable: true
-  description: Reason code.
+  description: Standardized system code representing the reason.
 primary_key: []
 relationships: []
 business_terms:

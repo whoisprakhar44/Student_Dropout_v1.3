@@ -56,15 +56,17 @@ columns:
 - name: citizen_health_schemes_master_pk
   type: INT
   nullable: true
-  description: Citizen health schemes master pk.
+  description: 'Primary Key: Unique identifier for the citizen health schemes master
+    record.'
 - name: health_scheme_code_fk
   type: STRING
   nullable: true
-  description: Health scheme code fk.
+  description: 'Foreign Key: Links to the associated health scheme code dimension
+    or master table.'
 - name: scheme_name
   type: STRING
   nullable: true
-  description: Scheme name.
+  description: The official name of the government welfare scheme or benefit program.
 - name: scheme_type
   type: STRING
   nullable: true
@@ -80,19 +82,19 @@ columns:
 - name: scheme_code
   type: STRING
   nullable: true
-  description: Scheme code.
+  description: Standardized system code representing the scheme.
 - name: scheme_create_date
   type: DATE
   nullable: true
-  description: Scheme create date.
+  description: The specific date or timestamp when the scheme create occurred.
 - name: scheme_start_date
   type: DATE
   nullable: true
-  description: Scheme start date.
+  description: The specific date or timestamp when the scheme start occurred.
 - name: scheme_end_date
   type: DATE
   nullable: true
-  description: Scheme end date.
+  description: The specific date or timestamp when the scheme end occurred.
 - name: scheme_active_status
   type: STRING
   nullable: true
@@ -104,7 +106,7 @@ columns:
 - name: create_date
   type: DATE
   nullable: true
-  description: Create date.
+  description: The specific date or timestamp when the create occurred.
 - name: create_by
   type: STRING
   nullable: true
@@ -112,11 +114,12 @@ columns:
 - name: updated_date
   type: DATE
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_health_schemes_master_pk
 relationships: []

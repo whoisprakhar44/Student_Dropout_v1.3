@@ -65,11 +65,12 @@ columns:
 - name: citizen_idty_pk
   type: INT
   nullable: true
-  description: Citizen idty pk.
+  description: 'Primary Key: Unique identifier for the citizenty record.'
 - name: citizen_idty_type_fk
   type: BIGINT
   nullable: true
-  description: Citizen idty type fk.
+  description: 'Foreign Key: Links to the associated citizenty type dimension or master
+    table.'
 - name: citizen_idty_value
   type: BIGINT
   nullable: true
@@ -77,7 +78,7 @@ columns:
 - name: issue_date
   type: TIMESTAMP
   nullable: true
-  description: Issue date.
+  description: The specific date or timestamp when the issue occurred.
 - name: source_db
   type: STRING
   nullable: true
@@ -93,27 +94,30 @@ columns:
 - name: expiry_date
   type: STRING
   nullable: true
-  description: Expiry date.
+  description: The specific date or timestamp when the expiry occurred.
 - name: idty_status_code
   type: STRING
   nullable: true
-  description: Idty status code.
+  description: Standardized system code representing the idty status.
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_idty_pk
 relationships: []

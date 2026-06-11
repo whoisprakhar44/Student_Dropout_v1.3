@@ -12,15 +12,16 @@ columns:
 - name: lgd_district_code
   type: VARCHAR
   nullable: false
-  description: Lgd district code.
+  description: Standardized system code representing the lgd district.
 - name: district_name
   type: VARCHAR
   nullable: true
-  description: District name.
+  description: The official name of the administrative district in Andhra Pradesh.
 - name: is_active
   type: VARCHAR
   nullable: true
-  description: Is active.
+  description: Indicates if the entity is currently active in the system ('Y' for
+    Yes, 'N' for No, or 'ACTIVE'/'INACTIVE').
 primary_key:
 - lgd_district_code
 relationships: []

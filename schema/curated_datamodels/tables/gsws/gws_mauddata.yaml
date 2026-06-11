@@ -57,7 +57,7 @@ columns:
 - name: mobilenumber
   type: NVARCHAR
   nullable: true
-  description: Mobilenumberber.
+  description: The primary 10-digit mobile contact number registered.
 - name: ptype
   type: NVARCHAR
   nullable: true
@@ -109,7 +109,7 @@ columns:
 - name: inserted_date
   type: TIMESTAMP
   nullable: true
-  description: Inserted date.
+  description: The specific date or timestamp when the inserted occurred.
 primary_key: []
 relationships: []
 business_terms:

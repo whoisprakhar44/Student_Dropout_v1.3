@@ -85,43 +85,52 @@ columns:
 - name: school_academic_performance_fact_id_pk
   type: BIGINT
   nullable: true
-  description: School academic performance fact identifier primary key.
+  description: 'Primary Key: Unique identifier for the school academic performance
+    fact record.'
 - name: citizen_student_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen student identifier foreign key.
+  description: 'Foreign Key: Links to the associated citizen student dimension or
+    master table.'
 - name: citizen_school_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen school identifier foreign key.
+  description: 'Foreign Key: Links to the associated citizen school dimension or master
+    table.'
 - name: student_subject_id_fk
   type: BIGINT
   nullable: true
-  description: Student subject identifier foreign key.
+  description: 'Foreign Key: Links to the associated student subject dimension or
+    master table.'
 - name: exam_date_key_id_fk
   type: BIGINT
   nullable: true
-  description: Exam date key identifier foreign key.
+  description: 'Foreign Key: Links to the associated exam date key dimension or master
+    table.'
 - name: student_class_dim_id_fk
   type: BIGINT
   nullable: true
-  description: Student class dim identifier foreign key.
+  description: 'Foreign Key: Links to the associated student class dim dimension or
+    master table.'
 - name: assessment_dim_id_fk
   type: BIGINT
   nullable: true
-  description: Assessment dim identifier foreign key.
+  description: 'Foreign Key: Links to the associated assessment dim dimension or master
+    table.'
 - name: school_medium_id_fk
   type: BIGINT
   nullable: true
-  description: School medium identifier foreign key.
+  description: 'Foreign Key: Links to the associated school medium dimension or master
+    table.'
 - name: academic_year
   type: STRING
   nullable: true
-  description: Academic year.
+  description: The academic calendar year for the record (e.g., '2024-25').
 - name: student_exam_id_fk
   type: BIGINT
   nullable: true
-  description: Student exam identifier foreign key.
+  description: 'Foreign Key: Links to the associated student exam dimension or master
+    table.'
 - name: student_roll_number
   type: STRING
   nullable: true
@@ -153,19 +162,20 @@ columns:
 - name: pass_flag
   type: STRING
   nullable: true
-  description: Pass flag.
+  description: Boolean indicator flag for pass ('Y' for Yes, 'N' for No).
 - name: fail_flag
   type: STRING
   nullable: true
-  description: Fail flag.
+  description: Boolean indicator flag for fail ('Y' for Yes, 'N' for No).
 - name: absent_flag
   type: STRING
   nullable: true
-  description: Absent flag.
+  description: Indicates whether the individual was marked absent on the given date
+    ('Y' for Yes, 'N' for No).
 - name: withheld_flag
   type: STRING
   nullable: true
-  description: Withheld flag.
+  description: Boolean indicator flag for withheld ('Y' for Yes, 'N' for No).
 - name: grade_point
   type: DECIMAL(4,2)
   nullable: true
@@ -197,15 +207,18 @@ columns:
 - name: year_on_year_improvement_flag
   type: STRING
   nullable: true
-  description: Year on year improvement flag.
+  description: Boolean indicator flag for year on year improvement ('Y' for Yes, 'N'
+    for No).
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 primary_key:
 - school_academic_performance_fact_id_pk
 relationships:

@@ -120,35 +120,41 @@ columns:
 - name: scheme_benefits_fact_id_pk
   type: BIGINT
   nullable: true
-  description: Scheme benefits fact identifier primary key.
+  description: 'Primary Key: Unique identifier for the scheme benefits fact record.'
 - name: citizen_school_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen school identifier foreign key.
+  description: 'Foreign Key: Links to the associated citizen school dimension or master
+    table.'
 - name: school_scheme_master_id_fk
   type: BIGINT
   nullable: true
-  description: School scheme master identifier foreign key.
+  description: 'Foreign Key: Links to the associated school scheme master dimension
+    or master table.'
 - name: academic_year
   type: STRING
   nullable: true
-  description: Academic year.
+  description: The academic calendar year for the record (e.g., '2024-25').
 - name: benefit_type_id_fk
   type: BIGINT
   nullable: true
-  description: Benefit type identifier foreign key.
+  description: 'Foreign Key: Links to the associated benefit type dimension or master
+    table.'
 - name: beneficiary_type_id_fk
   type: BIGINT
   nullable: true
-  description: Beneficiary type identifier foreign key.
+  description: 'Foreign Key: Links to the associated beneficiary type dimension or
+    master table.'
 - name: citizen_student_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen student identifier foreign key.
+  description: 'Foreign Key: Links to the associated citizen student dimension or
+    master table.'
 - name: school_teacher_id_fk
   type: BIGINT
   nullable: true
-  description: School teacher identifier foreign key.
+  description: 'Foreign Key: Links to the associated school teacher dimension or master
+    table.'
 - name: scheme_application_id
   type: STRING
   nullable: true
@@ -156,19 +162,23 @@ columns:
 - name: social_category
   type: STRING
   nullable: true
-  description: Social category.
+  description: The social demographic category or caste classification (e.g., 'SC',
+    'ST', 'BC', 'OC').
 - name: eligible_flag
   type: STRING
   nullable: true
-  description: Eligible flag.
+  description: Indicates whether the citizen successfully met all eligibility criteria
+    for the benefit ('Y' for Yes, 'N' for No).
 - name: attendance_eligible_flag
   type: STRING
   nullable: true
-  description: Attendance eligible flag.
+  description: Boolean indicator flag for attendance eligible ('Y' for Yes, 'N' for
+    No).
 - name: benefit_delivered_flag
   type: STRING
   nullable: true
-  description: Benefit delivered flag.
+  description: Indicates whether the physical or financial benefit was fully delivered
+    to the end beneficiary ('Y' for Yes, 'N' for No).
 - name: delivery_mode
   type: STRING
   nullable: true
@@ -180,15 +190,18 @@ columns:
 - name: eligible_beneficiary_flag
   type: STRING
   nullable: true
-  description: Eligible beneficiary flag.
+  description: Boolean indicator flag for eligible beneficiary ('Y' for Yes, 'N' for
+    No).
 - name: benefit_sanctioned_flag
   type: STRING
   nullable: true
-  description: Benefit sanctioned flag.
+  description: Indicates whether the benefit amount was officially approved and sanctioned
+    ('Y' for Yes, 'N' for No).
 - name: benefit_disbursed_flag
   type: STRING
   nullable: true
-  description: Benefit disbursed flag.
+  description: Indicates whether the financial benefit has been successfully disbursed
+    to the citizen ('Y' for Yes, 'N' for No).
 - name: scheme_benefits_factcol
   type: STRING
   nullable: true
@@ -196,11 +209,11 @@ columns:
 - name: benefit_rejected_flag
   type: STRING
   nullable: true
-  description: Benefit rejected flag.
+  description: Boolean indicator flag for benefit rejected ('Y' for Yes, 'N' for No).
 - name: benefit_withheld_flag
   type: STRING
   nullable: true
-  description: Benefit withheld flag.
+  description: Boolean indicator flag for benefit withheld ('Y' for Yes, 'N' for No).
 - name: benefit_amount_sanctioned
   type: DECIMAL(12,2)
   nullable: true
@@ -240,19 +253,19 @@ columns:
 - name: application_date
   type: DATE
   nullable: true
-  description: Application date.
+  description: The specific date or timestamp when the application occurred.
 - name: sanction_date
   type: DATE
   nullable: true
-  description: Sanction date.
+  description: The specific date or timestamp when the sanction occurred.
 - name: disbursement_date
   type: DATE
   nullable: true
-  description: Disbursement date.
+  description: The specific date or timestamp when the disbursement occurred.
 - name: expected_disbursement_date
   type: DATE
   nullable: true
-  description: Expected disbursement date.
+  description: The specific date or timestamp when the expected disbursement occurred.
 - name: delay_days
   type: INT
   nullable: true
@@ -260,43 +273,45 @@ columns:
 - name: rejection_reason_code
   type: STRING
   nullable: true
-  description: Rejection reason code.
+  description: Standardized reason code explaining why a scheme application was rejected.
 - name: payment_failure_reason_code
   type: STRING
   nullable: true
-  description: Payment failure reason code.
+  description: Standardized reason code explaining why a financial disbursement failed.
 - name: aadhaar_seeded_flag
   type: STRING
   nullable: true
-  description: Aadhaar seeded flag.
+  description: Boolean indicator flag for aadhaar seeded ('Y' for Yes, 'N' for No).
 - name: bank_account_verified_flag
   type: STRING
   nullable: true
-  description: Bank account verified flag.
+  description: Boolean indicator flag for bank account verified ('Y' for Yes, 'N'
+    for No).
 - name: kyc_completed_flag
   type: STRING
   nullable: true
-  description: Kyc completed flag.
+  description: Boolean indicator flag for kyc completed ('Y' for Yes, 'N' for No).
 - name: girl_child_flag
   type: STRING
   nullable: true
-  description: Girl child flag.
+  description: Boolean indicator flag for girl child ('Y' for Yes, 'N' for No).
 - name: sc_st_minority_flag
   type: STRING
   nullable: true
-  description: Sc st minority flag.
+  description: Boolean indicator flag for sc st minority ('Y' for Yes, 'N' for No).
 - name: cwsn_flag
   type: STRING
   nullable: true
-  description: Cwsn flag.
+  description: Boolean indicator flag for cwsn ('Y' for Yes, 'N' for No).
 - name: bgm_eligible_flag
   type: STRING
   nullable: true
-  description: Bgm eligible flag.
+  description: Boolean indicator flag for bgm eligible ('Y' for Yes, 'N' for No).
 - name: below_poverty_line_flag
   type: STRING
   nullable: true
-  description: Below poverty line flag.
+  description: Boolean indicator flag for below poverty line ('Y' for Yes, 'N' for
+    No).
 - name: scheme_uptake_rate
   type: DECIMAL(5,2)
   nullable: true
@@ -304,19 +319,22 @@ columns:
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - scheme_benefits_fact_id_pk
 relationships:

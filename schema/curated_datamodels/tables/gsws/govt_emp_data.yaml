@@ -15,55 +15,66 @@ columns:
 - name: cfmsid
   type: NVARCHAR
   nullable: true
-  description: Cfmsid.
+  description: Comprehensive Financial Management System (CFMS) employee ID, serving
+    as the unique system identifier for government employees.
 - name: aadharnumber
   type: VARCHAR
   nullable: true
-  description: Aadharnumberber.
+  description: 12-digit Aadhaar identification number of the employee. Used for biometric
+    and identity verification.
 - name: employeename
   type: NVARCHAR
   nullable: true
-  description: Employeename.
+  description: Full legal name of the government employee.
 - name: salary
   type: NVARCHAR
   nullable: true
-  description: Salary.
+  description: The current monthly salary, pay scale, or remuneration tier of the
+    employee.
 - name: category
   type: NVARCHAR
   nullable: true
-  description: Category.
+  description: The primary employment or departmental category (e.g., Teaching, Non-Teaching,
+    Contract, Regular).
 - name: designation
   type: VARCHAR
   nullable: true
-  description: Designation.
+  description: The official job title or designation of the employee within their
+    department.
 - name: baadharnumber
   type: VARCHAR
   nullable: true
-  description: Baadharnumberber.
+  description: Basic Aadhaar number or an alternative linked identifier used for specific
+    scheme verifications.
 - name: created_by
   type: VARCHAR
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process that originally inserted this
+    record into the database.
 - name: is_active
   type: VARCHAR
   nullable: true
-  description: Is active.
+  description: Indicates if the entity is currently active in the system ('Y' for
+    Yes, 'N' for No, or 'ACTIVE'/'INACTIVE').
 - name: mobilenumber
   type: BIGINT
   nullable: true
-  description: Mobilenumberber.
+  description: The primary 10-digit mobile contact number registered to the employee.
 - name: action_date
   type: DATE
   nullable: true
-  description: Action date.
+  description: The date when the last major administrative action (like transfer,
+    promotion, or onboarding) occurred.
 - name: maincategory
   type: VARCHAR
   nullable: true
-  description: Maincategory.
+  description: The broad functional category, ministry, or parent department the employee
+    belongs to.
 - name: updated_on
   type: DATE
   nullable: true
-  description: Updated on.
+  description: Timestamp of when this record was most recently updated in the source
+    system.
 primary_key: []
 relationships: []
 business_terms:

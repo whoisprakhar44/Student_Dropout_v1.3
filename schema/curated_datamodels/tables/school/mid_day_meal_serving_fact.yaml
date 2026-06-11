@@ -12,23 +12,26 @@ columns:
 - name: mid_day_meal_serving_fact_id_pk
   type: BIGINT
   nullable: true
-  description: Mid day meal serving fact identifier primary key.
+  description: 'Primary Key: Unique identifier for the mid day meal serving fact record.'
 - name: citizen_school_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen school identifier foreign key.
+  description: 'Foreign Key: Links to the associated citizen school dimension or master
+    table.'
 - name: date_key_id_fk
   type: BIGINT
   nullable: true
-  description: Date key identifier foreign key.
+  description: 'Foreign Key: Links to the associated date key dimension or master
+    table.'
 - name: meal_type_id_fk
   type: BIGINT
   nullable: true
-  description: Meal type identifier foreign key.
+  description: 'Foreign Key: Links to the associated meal type dimension or master
+    table.'
 - name: academic_year
   type: STRING
   nullable: true
-  description: Academic year.
+  description: The academic calendar year for the record (e.g., '2024-25').
 - name: mid_day_meal_serving_factor
   type: DECIMAL(5,2)
   nullable: true
@@ -44,7 +47,7 @@ columns:
 - name: meal_served_flag
   type: STRING
   nullable: true
-  description: Meal served flag.
+  description: Boolean indicator flag for meal served ('Y' for Yes, 'N' for No).
 - name: calories_served
   type: DECIMAL(8,2)
   nullable: true
@@ -64,23 +67,26 @@ columns:
 - name: hygiene_compliant_flag
   type: STRING
   nullable: true
-  description: Hygiene compliant flag.
+  description: Boolean indicator flag for hygiene compliant ('Y' for Yes, 'N' for
+    No).
 - name: food_tasted_flag
   type: STRING
   nullable: true
-  description: Food tasted flag.
+  description: Boolean indicator flag for food tasted ('Y' for Yes, 'N' for No).
 - name: teacher_supervised_flag
   type: STRING
   nullable: true
-  description: Teacher supervised flag.
+  description: Boolean indicator flag for teacher supervised ('Y' for Yes, 'N' for
+    No).
 - name: medical_incident_reported_flag
   type: STRING
   nullable: true
-  description: Medical incident reported flag.
+  description: Boolean indicator flag for medical incident reported ('Y' for Yes,
+    'N' for No).
 - name: last_inspection_date
   type: DATE
   nullable: true
-  description: Last inspection date.
+  description: The specific date or timestamp when the last inspection occurred.
 - name: inspection_score
   type: DECIMAL(5,2)
   nullable: true
@@ -88,31 +94,33 @@ columns:
 - name: inspection_remarks_code
   type: STRING
   nullable: true
-  description: Inspection remarks code.
+  description: Standardized system code representing the inspection remarks.
 - name: geo_tagged_flag
   type: STRING
   nullable: true
-  description: Geographic tagged flag.
+  description: Boolean indicator flag for geo tagged ('Y' for Yes, 'N' for No).
 - name: photo_captured_flag
   type: STRING
   nullable: true
-  description: Photo captured flag.
+  description: Boolean indicator flag for photo captured ('Y' for Yes, 'N' for No).
 - name: meal_not_served_reason_code
   type: STRING
   nullable: true
-  description: Meal not served reason code.
+  description: Standardized system code representing the meal not served reason.
 - name: supply_shortage_flag
   type: STRING
   nullable: true
-  description: Supply shortage flag.
+  description: Boolean indicator flag for supply shortage ('Y' for Yes, 'N' for No).
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 primary_key:
 - mid_day_meal_serving_fact_id_pk
 relationships: []

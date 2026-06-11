@@ -12,31 +12,34 @@ columns:
 - name: ration_card_family_pk
   type: BIGINT
   nullable: true
-  description: Ration card family pk.
+  description: 'Primary Key: Unique identifier for the ration card family record.'
 - name: ration_card_type_id_fk
   type: BIGINT
   nullable: true
-  description: Ration card type identifier fk.
+  description: 'Foreign Key: Links to the associated ration card type dimension or
+    master table.'
 - name: ration_card_no
   type: STRING
   nullable: true
-  description: Ration card no.
+  description: The unique household ration card number used for public distribution
+    benefits.
 - name: card_type_code
   type: STRING
   nullable: true
-  description: Card type code.
+  description: The category of the ration card (e.g., 'LOW' for Low Income/BPL).
 - name: issuing_district_code
   type: STRING
   nullable: true
-  description: Issuing district code.
+  description: Standardized system code representing the issuing district.
 - name: fps_code
   type: STRING
   nullable: true
-  description: Fps code.
+  description: Standardized system code representing the fps.
 - name: citizen_master_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen master identifier fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: annual_income
   type: STRING
   nullable: true
@@ -48,7 +51,8 @@ columns:
 - name: status_code
   type: STRING
   nullable: true
-  description: Status code.
+  description: The current operational status code of the record (e.g., 'ACTIVE',
+    'INACTIVE', 'PENDING').
 - name: created_at
   type: TIMESTAMP
   nullable: true
@@ -56,7 +60,8 @@ columns:
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_at
   type: TIMESTAMP
   nullable: true
@@ -64,7 +69,8 @@ columns:
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - ration_card_family_pk
 relationships: []

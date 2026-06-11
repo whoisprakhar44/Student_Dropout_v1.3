@@ -31,7 +31,7 @@ columns:
 - name: ifsc_code
   type: VARCHAR
   nullable: false
-  description: Ifsc code.
+  description: Standardized system code representing the ifsc.
 - name: date_created
   type: DATE
   nullable: false

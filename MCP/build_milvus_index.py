@@ -60,12 +60,10 @@ def load_table_chunks(yaml_files: list) -> list[dict]:
         rel_text = "\n".join(f"- {r}" for r in relationships) if relationships else ""
 
         embedding_text = (
-            f"Table: {table_name}\n"
-            f"Database: {database_name}\n"
-            f"Description: {description}\n"
-            f"Columns:\n" + "\n".join(col_lines) + "\n"
-            f"Relationships:\n{rel_text}\n"
-            f"DDL:\n{raw_ddl}"
+            f"DDL:\n{raw_ddl}\n\n"
+            f"Table Description:\n{description}\n\n"
+            f"Column Descriptions:\n" + "\n".join(col_lines) + "\n\n"
+            f"Relationships:\n{rel_text}"
         ).strip()
 
         chunks.append({

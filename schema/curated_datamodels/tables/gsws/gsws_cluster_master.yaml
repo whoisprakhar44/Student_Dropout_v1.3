@@ -15,15 +15,15 @@ columns:
 - name: distrtict_code
   type: BIGINT
   nullable: true
-  description: Distrtict code.
+  description: Standardized system code representing the distrtict.
 - name: mandal_code
   type: BIGINT
   nullable: true
-  description: Mandal code.
+  description: Standardized system code representing the mandal.
 - name: gsws_code
   type: BIGINT
   nullable: true
-  description: Gsws code.
+  description: Standardized system code representing the gsws.
 - name: urban_rural
   type: VARCHAR
   nullable: true
@@ -39,19 +39,22 @@ columns:
 - name: created_by
   type: VARCHAR
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: created_on
   type: TIMESTAMP
   nullable: true
-  description: Created on.
+  description: The specific date or timestamp when the created occurred.
 - name: updated_on
   type: TIMESTAMP
   nullable: true
-  description: Updated on.
+  description: Timestamp of when this record was most recently updated in the source
+    system.
 - name: updated_by
   type: VARCHAR
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 - name: oldcluster_id
   type: VARCHAR
   nullable: true

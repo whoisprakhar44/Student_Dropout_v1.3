@@ -74,15 +74,17 @@ columns:
 - name: citizen_document_pk
   type: BIGINT
   nullable: true
-  description: Citizen document pk.
+  description: 'Primary Key: Unique identifier for the citizen document record.'
 - name: citizen_master_fk
   type: BIGINT
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: citizen_document_type_fk
   type: INT
   nullable: true
-  description: Citizen document type fk.
+  description: 'Foreign Key: Links to the associated citizen document type dimension
+    or master table.'
 - name: document_name
   type: STRING
   nullable: true
@@ -98,11 +100,11 @@ columns:
 - name: issuance_date
   type: STRING
   nullable: true
-  description: Issuance date.
+  description: The specific date or timestamp when the issuance occurred.
 - name: registration_date
   type: STRING
   nullable: true
-  description: Registration date.
+  description: The specific date or timestamp when the registration occurred.
 - name: place_of_event
   type: STRING
   nullable: true
@@ -114,7 +116,7 @@ columns:
 - name: last_amendment_date
   type: STRING
   nullable: true
-  description: Last amendment date.
+  description: The specific date or timestamp when the last amendment occurred.
 - name: digital_signature_hash
   type: STRING
   nullable: true
@@ -134,7 +136,7 @@ columns:
 - name: uid_flag
   type: STRING
   nullable: true
-  description: Uid flag.
+  description: Boolean indicator flag for uid ('Y' for Yes, 'N' for No).
 - name: valid_to
   type: STRING
   nullable: true
@@ -142,19 +144,22 @@ columns:
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_document_pk
 relationships: []

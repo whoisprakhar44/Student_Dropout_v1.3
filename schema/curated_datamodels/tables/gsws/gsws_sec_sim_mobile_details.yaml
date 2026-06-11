@@ -22,15 +22,15 @@ columns:
 - name: district_code
   type: BIGINT
   nullable: true
-  description: District code.
+  description: Standardized system code representing the district.
 - name: mandal_code
   type: BIGINT
   nullable: true
-  description: Mandal code.
+  description: Standardized system code representing the mandal.
 - name: sec_code
   type: BIGINT
   nullable: false
-  description: Sec code.
+  description: Standardized system code representing the sec.
 - name: is_mobile_provided
   type: VARCHAR
   nullable: true
@@ -82,7 +82,7 @@ columns:
 - name: inserted_date
   type: TIMESTAMP
   nullable: true
-  description: Inserted date.
+  description: The specific date or timestamp when the inserted occurred.
 - name: inserted_by
   type: VARCHAR
   nullable: true
@@ -90,11 +90,12 @@ columns:
 - name: updated_by
   type: VARCHAR
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: secretariat_address
   type: VARCHAR
   nullable: true
@@ -106,7 +107,8 @@ columns:
 - name: rural_urban_flag
   type: VARCHAR
   nullable: true
-  description: Rural urban flag.
+  description: Indicates the demographic classification of the area ('R' or 'Rural',
+    'U' or 'Urban').
 - name: disignation
   type: VARCHAR
   nullable: true

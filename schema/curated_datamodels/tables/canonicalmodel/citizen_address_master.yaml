@@ -71,11 +71,12 @@ columns:
 - name: citizen_address_master_pk
   type: INT
   nullable: true
-  description: Citizen address master pk.
+  description: 'Primary Key: Unique identifier for the citizen address master record.'
 - name: citizen_master_fk
   type: STRING
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: address_type
   type: STRING
   nullable: true
@@ -95,15 +96,15 @@ columns:
 - name: pin_code
   type: STRING
   nullable: true
-  description: Pin code.
+  description: The 6-digit postal code (PIN) for the address location.
 - name: latitude
   type: STRING
   nullable: true
-  description: Latitude.
+  description: The geographical latitude coordinate of the location.
 - name: longitude
   type: STRING
   nullable: true
-  description: Longitude.
+  description: The geographical longitude coordinate of the location.
 - name: coordinate_system
   type: STRING
   nullable: true
@@ -115,31 +116,34 @@ columns:
 - name: address_status_code
   type: STRING
   nullable: true
-  description: Address status code.
+  description: Standardized system code representing the address status.
 - name: effective_start_date
   type: DATE
   nullable: true
-  description: Effective start date.
+  description: The specific date or timestamp when the effective start occurred.
 - name: effective_end_date
   type: DATE
   nullable: true
-  description: Effective end date.
+  description: The specific date or timestamp when the effective end occurred.
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_address_master_pk
 relationships: []

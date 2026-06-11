@@ -61,11 +61,12 @@ columns:
 - name: citizen_land_id_pk
   type: INT
   nullable: true
-  description: Citizen land identifier pk.
+  description: 'Primary Key: Unique identifier for the citizen land record.'
 - name: citizen_master_fk
   type: INT
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: land_id
   type: STRING
   nullable: true
@@ -105,7 +106,7 @@ columns:
 - name: registration_date
   type: STRING
   nullable: true
-  description: Registration date.
+  description: The specific date or timestamp when the registration occurred.
 - name: market_value
   type: STRING
   nullable: true
@@ -125,19 +126,22 @@ columns:
 - name: created_date
   type: STRING
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: STRING
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_land_id_pk
 relationships: []

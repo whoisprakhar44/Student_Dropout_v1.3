@@ -42,7 +42,7 @@ columns:
 - name: gender
   type: VARCHAR
   nullable: true
-  description: Gender.
+  description: The gender of the individual (e.g., 'M' for Male, 'F' for Female).
 - name: citizen_name
   type: VARCHAR
   nullable: true
@@ -98,7 +98,7 @@ columns:
 - name: inserted_date
   type: TIMESTAMP
   nullable: true
-  description: Inserted date.
+  description: The specific date or timestamp when the inserted occurred.
 - name: citizen_name_telugu
   type: NVARCHAR
   nullable: true

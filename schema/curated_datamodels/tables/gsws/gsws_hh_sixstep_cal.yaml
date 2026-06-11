@@ -93,11 +93,12 @@ columns:
 - name: updated_by
   type: VARCHAR
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: ekycstatus
   type: VARCHAR
   nullable: true
@@ -153,7 +154,7 @@ columns:
 - name: ekyc_date
   type: TIMESTAMP
   nullable: true
-  description: Ekyc date.
+  description: The specific date or timestamp when the ekyc occurred.
 - name: castetype
   type: VARCHAR
   nullable: true

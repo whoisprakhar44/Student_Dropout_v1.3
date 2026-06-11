@@ -12,11 +12,12 @@ columns:
 - name: citizen_family_master_pk
   type: BIGINT
   nullable: true
-  description: Citizen family master pk.
+  description: 'Primary Key: Unique identifier for the citizen family master record.'
 - name: citizen_master_fk
   type: BIGINT
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: household_id
   type: STRING
   nullable: true
@@ -32,7 +33,8 @@ columns:
 - name: realtionship
   type: STRING
   nullable: true
-  description: Relationship (with database spelling realtionship).
+  description: The familial relationship of the individual to the head of the household
+    (e.g., 'HEAD', 'SPOUSE', 'CHILD').
 - name: head_of_the_family
   type: STRING
   nullable: true
@@ -56,15 +58,18 @@ columns:
 - name: father_citizen_master_fk
   type: STRING
   nullable: true
-  description: Father citizen master fk.
+  description: 'Foreign Key: Links to the associated father citizen master dimension
+    or master table.'
 - name: mother_citizen_master_fk
   type: STRING
   nullable: true
-  description: Mother citizen master fk.
+  description: 'Foreign Key: Links to the associated mother citizen master dimension
+    or master table.'
 - name: spouse_citizen_master_fk
   type: STRING
   nullable: true
-  description: Spouse citizen master fk.
+  description: 'Foreign Key: Links to the associated spouse citizen master dimension
+    or master table.'
 - name: is_married
   type: STRING
   nullable: true
@@ -84,27 +89,30 @@ columns:
 - name: effective_start_date
   type: DATE
   nullable: true
-  description: Effective start date.
+  description: The specific date or timestamp when the effective start occurred.
 - name: effective_end_date
   type: DATE
   nullable: true
-  description: Effective end date.
+  description: The specific date or timestamp when the effective end occurred.
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_family_master_pk
 relationships: []

@@ -59,11 +59,13 @@ columns:
 - name: citizen_welfare_schemes_master_pk
   type: INT
   nullable: true
-  description: Citizen welfare schemes master pk.
+  description: 'Primary Key: Unique identifier for the citizen welfare schemes master
+    record.'
 - name: welfare_schemes_life_cycle_fk
   type: INT
   nullable: true
-  description: Welfare schemes life cycle fk.
+  description: 'Foreign Key: Links to the associated welfare schemes life cycle dimension
+    or master table.'
 - name: welfare_schemes_life_cycle_id
   type: INT
   nullable: true
@@ -71,11 +73,11 @@ columns:
 - name: scheme_name
   type: STRING
   nullable: true
-  description: Scheme name.
+  description: The official name of the government welfare scheme or benefit program.
 - name: scheme_code
   type: STRING
   nullable: true
-  description: Scheme code.
+  description: Standardized system code representing the scheme.
 - name: scheme_description
   type: STRING
   nullable: true
@@ -87,19 +89,20 @@ columns:
 - name: scheme_create_date
   type: DATE
   nullable: true
-  description: Scheme create date.
+  description: The specific date or timestamp when the scheme create occurred.
 - name: scheme_start_date
   type: DATE
   nullable: true
-  description: Scheme start date.
+  description: The specific date or timestamp when the scheme start occurred.
 - name: scheme_end_date
   type: DATE
   nullable: true
-  description: Scheme end date.
+  description: The specific date or timestamp when the scheme end occurred.
 - name: is_active
   type: INT
   nullable: true
-  description: Is active.
+  description: Indicates if the entity is currently active in the system ('Y' for
+    Yes, 'N' for No, or 'ACTIVE'/'INACTIVE').
 - name: scheme_amount
   type: STRING
   nullable: true
@@ -111,19 +114,22 @@ columns:
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_welfare_schemes_master_pk
 relationships: []

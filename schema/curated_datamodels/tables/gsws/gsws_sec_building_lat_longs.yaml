@@ -15,11 +15,11 @@ columns:
 - name: longitude
   type: VARCHAR
   nullable: false
-  description: Longitude.
+  description: The geographical longitude coordinate of the location.
 - name: latitude
   type: VARCHAR
   nullable: false
-  description: Latitude.
+  description: The geographical latitude coordinate of the location.
 - name: image
   type: VARCHAR
   nullable: false
@@ -27,7 +27,7 @@ columns:
 - name: gsws_code
   type: BIGINT
   nullable: false
-  description: Gsws code.
+  description: Standardized system code representing the gsws.
 - name: inserted_by
   type: VARCHAR
   nullable: false
@@ -35,7 +35,7 @@ columns:
 - name: inserted_on
   type: TIMESTAMP
   nullable: true
-  description: Inserted on.
+  description: The specific date or timestamp when the inserted occurred.
 - name: flag
   type: STRING
   nullable: true

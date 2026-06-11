@@ -46,11 +46,11 @@ columns:
 - name: school_medium_pk
   type: BIGINT
   nullable: true
-  description: School medium primary key.
+  description: 'Primary Key: Unique identifier for the school medium record.'
 - name: medium_code
   type: STRING
   nullable: true
-  description: Medium code.
+  description: Standardized system code representing the medium.
 - name: medium_name
   type: STRING
   nullable: true

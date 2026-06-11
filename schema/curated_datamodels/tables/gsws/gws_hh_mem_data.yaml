@@ -37,31 +37,33 @@ columns:
 - name: lgd_dist_code
   type: BIGINT
   nullable: true
-  description: Lgd dist code.
+  description: Standardized system code representing the lgd dist.
 - name: district_name
   type: VARCHAR
   nullable: true
-  description: District name.
+  description: The official name of the administrative district in Andhra Pradesh.
 - name: lgd_mandal_code
   type: BIGINT
   nullable: true
-  description: Lgd mandal code.
+  description: Standardized system code representing the lgd mandal.
 - name: mandal_name
   type: VARCHAR
   nullable: true
-  description: Mandal name.
+  description: The official name of the Mandal (sub-district administrative division).
 - name: secretariat_code
   type: BIGINT
   nullable: true
-  description: Secretariat code.
+  description: The unique GSWS Secretariat identification code mapping to a specific
+    local governance office.
 - name: secretariat_name
   type: VARCHAR
   nullable: true
-  description: Secretariat name.
+  description: The official name of the GSWS Secretariat.
 - name: rural_urban_flag
   type: VARCHAR
   nullable: true
-  description: Rural urban flag.
+  description: Indicates the demographic classification of the area ('R' or 'Rural',
+    'U' or 'Urban').
 - name: cluster_id
   type: BIGINT
   nullable: false
@@ -89,7 +91,7 @@ columns:
 - name: gender
   type: VARCHAR
   nullable: true
-  description: Gender.
+  description: The gender of the individual (e.g., 'M' for Male, 'F' for Female).
 - name: caste
   type: VARCHAR
   nullable: true
@@ -205,7 +207,7 @@ columns:
 - name: panchayat_code
   type: VARCHAR
   nullable: true
-  description: Panchayat code.
+  description: Standardized system code representing the panchayat.
 - name: panchayat_name
   type: VARCHAR
   nullable: true

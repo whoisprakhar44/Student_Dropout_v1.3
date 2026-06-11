@@ -37,7 +37,7 @@ columns:
 - name: health_scheme_code
   type: STRING
   nullable: true
-  description: Health scheme code.
+  description: Standardized system code representing the health scheme.
 primary_key: []
 relationships: []
 business_terms:

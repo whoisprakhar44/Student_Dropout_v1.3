@@ -85,11 +85,11 @@ columns:
 - name: subject_pk
   type: BIGINT
   nullable: true
-  description: Subject primary key.
+  description: 'Primary Key: Unique identifier for the subject record.'
 - name: subject_code
   type: STRING
   nullable: true
-  description: Subject code.
+  description: Standardized system code representing the subject.
 - name: subject_name
   type: STRING
   nullable: true
@@ -113,11 +113,11 @@ columns:
 - name: is_vocational_flag
   type: STRING
   nullable: true
-  description: Is vocational flag.
+  description: Boolean indicator flag for is vocational ('Y' for Yes, 'N' for No).
 - name: is_skill_subject_flag
   type: STRING
   nullable: true
-  description: Is skill subject flag.
+  description: Boolean indicator flag for is skill subject ('Y' for Yes, 'N' for No).
 - name: min_class
   type: INT
   nullable: true
@@ -133,11 +133,11 @@ columns:
 - name: is_compulsory_flag
   type: STRING
   nullable: true
-  description: Is compulsory flag.
+  description: Boolean indicator flag for is compulsory ('Y' for Yes, 'N' for No).
 - name: board_code
   type: STRING
   nullable: true
-  description: Board code.
+  description: Standardized system code representing the board.
 - name: assessment_pattern
   type: STRING
   nullable: true
@@ -173,23 +173,26 @@ columns:
 - name: replaced_by_subject_pk
   type: BIGINT
   nullable: true
-  description: Replaced by subject primary key.
+  description: 'Primary Key: Unique identifier for the replaced by subject record.'
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - subject_pk
 - replaced_by_subject_pk

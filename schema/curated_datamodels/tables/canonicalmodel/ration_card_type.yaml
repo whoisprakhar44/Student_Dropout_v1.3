@@ -48,7 +48,7 @@ columns:
 - name: card_type_code
   type: STRING
   nullable: true
-  description: Card type code.
+  description: The category of the ration card (e.g., 'LOW' for Low Income/BPL).
 primary_key: []
 relationships: []
 business_terms:

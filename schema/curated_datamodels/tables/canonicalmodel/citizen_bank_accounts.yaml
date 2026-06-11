@@ -50,11 +50,12 @@ columns:
 - name: citizen_bank_accounts_pk
   type: INT
   nullable: true
-  description: Citizen bank accounts pk.
+  description: 'Primary Key: Unique identifier for the citizen bank accounts record.'
 - name: citizen_master_fk
   type: INT
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: account_name
   type: STRING
   nullable: true
@@ -78,23 +79,26 @@ columns:
 - name: bank_ifsc_code
   type: STRING
   nullable: true
-  description: Bank ifsc code.
+  description: Standardized system code representing the bank ifsc.
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_bank_accounts_pk
 relationships: []

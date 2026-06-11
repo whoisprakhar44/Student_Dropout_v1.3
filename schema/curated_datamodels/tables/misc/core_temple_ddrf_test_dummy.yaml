@@ -34,11 +34,11 @@ columns:
 - name: district_name
   type: STRING
   nullable: true
-  description: District name.
+  description: The official name of the administrative district in Andhra Pradesh.
 - name: mandal_name
   type: STRING
   nullable: true
-  description: Mandal name.
+  description: The official name of the Mandal (sub-district administrative division).
 - name: village_name
   type: STRING
   nullable: true
@@ -66,11 +66,11 @@ columns:
 - name: amount
   type: DOUBLE
   nullable: true
-  description: Amount.
+  description: Numeric measurement or financial value representing the amount.
 - name: inserted_date
   type: STRING
   nullable: true
-  description: Inserted date.
+  description: The specific date or timestamp when the inserted occurred.
 - name: op
   type: STRING
   nullable: true
@@ -82,7 +82,7 @@ columns:
 - name: deleted_flag
   type: BOOLEAN
   nullable: true
-  description: Deleted flag.
+  description: Boolean indicator flag for deleted ('Y' for Yes, 'N' for No).
 primary_key: []
 relationships: []
 business_terms:

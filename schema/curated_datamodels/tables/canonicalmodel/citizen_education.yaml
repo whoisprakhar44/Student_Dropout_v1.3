@@ -54,11 +54,12 @@ columns:
 - name: citizen_education_id_pk
   type: INT
   nullable: true
-  description: Citizen education identifier pk.
+  description: 'Primary Key: Unique identifier for the citizen education record.'
 - name: citizen_master_fk
   type: INT
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: qualification_name
   type: STRING
   nullable: true
@@ -74,7 +75,7 @@ columns:
 - name: institution_code
   type: STRING
   nullable: true
-  description: Institution code.
+  description: Standardized system code representing the institution.
 - name: scholarship_scheme
   type: STRING
   nullable: true
@@ -86,7 +87,8 @@ columns:
 - name: current_qualification_flag
   type: STRING
   nullable: true
-  description: Current qualification flag.
+  description: Boolean indicator flag for current qualification ('Y' for Yes, 'N'
+    for No).
 - name: mode_of_study
   type: STRING
   nullable: true
@@ -102,7 +104,8 @@ columns:
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_at
   type: STRING
   nullable: true
@@ -110,7 +113,8 @@ columns:
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_education_id_pk
 relationships: []

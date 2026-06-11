@@ -70,27 +70,32 @@ columns:
 - name: school_teacher_attendance_fact_id_pk
   type: BIGINT
   nullable: true
-  description: School teacher attendance fact identifier primary key.
+  description: 'Primary Key: Unique identifier for the school teacher attendance fact
+    record.'
 - name: citizen_school_teacher_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen school teacher identifier foreign key.
+  description: 'Foreign Key: Links to the associated citizen school teacher dimension
+    or master table.'
 - name: citizen_student_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen student identifier foreign key.
+  description: 'Foreign Key: Links to the associated citizen student dimension or
+    master table.'
 - name: attendance_date_key_id_fk
   type: BIGINT
   nullable: true
-  description: Attendance date key identifier foreign key.
+  description: 'Foreign Key: Links to the associated attendance date key dimension
+    or master table.'
 - name: academic_year
   type: STRING
   nullable: true
-  description: Academic year.
+  description: The academic calendar year for the record (e.g., '2024-25').
 - name: present_flag
   type: STRING
   nullable: true
-  description: Present flag.
+  description: Indicates whether the individual was marked present on the given date
+    ('Y' for Yes, 'N' for No).
 - name: attendance_count
   type: INT
   nullable: true
@@ -98,15 +103,15 @@ columns:
 - name: on_leave_flag
   type: STRING
   nullable: true
-  description: On leave flag.
+  description: Boolean indicator flag for on leave ('Y' for Yes, 'N' for No).
 - name: on_duty_flag
   type: STRING
   nullable: true
-  description: On duty flag.
+  description: Boolean indicator flag for on duty ('Y' for Yes, 'N' for No).
 - name: late_flag
   type: STRING
   nullable: true
-  description: Late flag.
+  description: Boolean indicator flag for late ('Y' for Yes, 'N' for No).
 - name: leave_type
   type: STRING
   nullable: true
@@ -114,7 +119,7 @@ columns:
 - name: approved_leave_flag
   type: STRING
   nullable: true
-  description: Approved leave flag.
+  description: Boolean indicator flag for approved leave ('Y' for Yes, 'N' for No).
 - name: attendance_source
   type: STRING
   nullable: true
@@ -126,7 +131,7 @@ columns:
 - name: attendance_status_code
   type: STRING
   nullable: true
-  description: Attendance status code.
+  description: The specific standardized code representing the attendance outcome.
 - name: capture_source
   type: STRING
   nullable: true
@@ -134,11 +139,11 @@ columns:
 - name: image_available_flag
   type: STRING
   nullable: true
-  description: Image available flag.
+  description: Boolean indicator flag for image available ('Y' for Yes, 'N' for No).
 - name: approval_status_code
   type: STRING
   nullable: true
-  description: Approval status code.
+  description: Standardized system code representing the approval status.
 - name: approval_role
   type: STRING
   nullable: true
@@ -150,11 +155,13 @@ columns:
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 primary_key:
 - school_teacher_attendance_fact_id_pk
 relationships:

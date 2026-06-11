@@ -83,43 +83,52 @@ columns:
 - name: school_student_attendance_fact_id_pk
   type: BIGINT
   nullable: true
-  description: School student attendance fact identifier primary key.
+  description: 'Primary Key: Unique identifier for the school student attendance fact
+    record.'
 - name: citizen_student_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen student identifier foreign key.
+  description: 'Foreign Key: Links to the associated citizen student dimension or
+    master table.'
 - name: school_medium_id_fk
   type: BIGINT
   nullable: true
-  description: School medium identifier foreign key.
+  description: 'Foreign Key: Links to the associated school medium dimension or master
+    table.'
 - name: student_class_dim_id_fk
   type: BIGINT
   nullable: true
-  description: Student class dim identifier foreign key.
+  description: 'Foreign Key: Links to the associated student class dim dimension or
+    master table.'
 - name: student_school_id_fk
   type: BIGINT
   nullable: true
-  description: Student school identifier foreign key.
+  description: 'Foreign Key: Links to the associated student school dimension or master
+    table.'
 - name: academic_year
   type: STRING
   nullable: true
-  description: Academic year.
+  description: The academic calendar year for the record (e.g., '2024-25').
 - name: attendance_date_id_fk
   type: BIGINT
   nullable: true
-  description: Attendance date identifier foreign key.
+  description: 'Foreign Key: Links to the associated attendance date dimension or
+    master table.'
 - name: present_flag
   type: STRING
   nullable: true
-  description: Present flag.
+  description: Indicates whether the individual was marked present on the given date
+    ('Y' for Yes, 'N' for No).
 - name: absent_flag
   type: STRING
   nullable: true
-  description: Absent flag.
+  description: Indicates whether the individual was marked absent on the given date
+    ('Y' for Yes, 'N' for No).
 - name: half_day_flag
   type: STRING
   nullable: true
-  description: Half day flag.
+  description: Indicates whether the attendance was recorded as a half-day ('Y' for
+    Yes, 'N' for No).
 - name: attendance_weight
   type: DECIMAL(5,2)
   nullable: true
@@ -127,11 +136,11 @@ columns:
 - name: attendance_status_code
   type: STRING
   nullable: true
-  description: Attendance status code.
+  description: The specific standardized code representing the attendance outcome.
 - name: attendance_reason_code
   type: STRING
   nullable: true
-  description: Attendance reason code.
+  description: The reason code explaining why an absence occurred.
 - name: marked_by_role
   type: STRING
   nullable: true
@@ -143,23 +152,24 @@ columns:
 - name: mdm_eligible_flag
   type: STRING
   nullable: true
-  description: Mid-day meal eligible flag.
+  description: Boolean indicator flag for mdm eligible ('Y' for Yes, 'N' for No).
 - name: meals_consumed_flag
   type: STRING
   nullable: true
-  description: Meals consumed flag.
+  description: Boolean indicator flag for meals consumed ('Y' for Yes, 'N' for No).
 - name: eggs_eligible_flag
   type: STRING
   nullable: true
-  description: Eggs eligible flag.
+  description: Boolean indicator flag for eggs eligible ('Y' for Yes, 'N' for No).
 - name: chikki_eligible_flag
   type: STRING
   nullable: true
-  description: Chikki eligible flag.
+  description: Boolean indicator flag for chikki eligible ('Y' for Yes, 'N' for No).
 - name: ragi_java_eligible_flag
   type: STRING
   nullable: true
-  description: Ragi java eligible flag.
+  description: Boolean indicator flag for ragi java eligible ('Y' for Yes, 'N' for
+    No).
 - name: capture_source
   type: STRING
   nullable: true
@@ -167,35 +177,38 @@ columns:
 - name: hm_approval_flag
   type: STRING
   nullable: true
-  description: Hm approval flag.
+  description: Boolean indicator flag for hm approval ('Y' for Yes, 'N' for No).
 - name: hm_approval_date
   type: DATE
   nullable: true
-  description: Hm approval date.
+  description: The specific date or timestamp when the hm approval occurred.
 - name: absence_reason_dim_id_fk
   type: BIGINT
   nullable: true
-  description: Absence reason dim identifier foreign key.
+  description: 'Foreign Key: Links to the associated absence reason dim dimension
+    or master table.'
 - name: image_available_flag
   type: STRING
   nullable: true
-  description: Image available flag.
+  description: Boolean indicator flag for image available ('Y' for Yes, 'N' for No).
 - name: latitude
   type: DECIMAL(9,6)
   nullable: true
-  description: Latitude.
+  description: The geographical latitude coordinate of the location.
 - name: longitude
   type: DECIMAL(9,6)
   nullable: true
-  description: Longitude.
+  description: The geographical longitude coordinate of the location.
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 primary_key:
 - school_student_attendance_fact_id_pk
 relationships:

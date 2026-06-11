@@ -85,27 +85,30 @@ columns:
 - name: citizen_student_id_pk
   type: BIGINT
   nullable: true
-  description: Citizen student identifier pk.
+  description: 'Primary Key: Unique identifier for the citizen student record.'
 - name: citizen_school_id_fk
   type: BIGINT
   nullable: true
-  description: Citizen school identifier fk.
+  description: 'Foreign Key: Links to the associated citizen school dimension or master
+    table.'
 - name: student_citizen_master_id_fk
   type: BIGINT
   nullable: true
-  description: Student citizen master identifier fk.
+  description: 'Foreign Key: Links to the associated student citizen master dimension
+    or master table.'
 - name: student_subject_id_fk
   type: BIGINT
   nullable: true
-  description: Student subject identifier fk.
+  description: 'Foreign Key: Links to the associated student subject dimension or
+    master table.'
 - name: student_name
   type: STRING
   nullable: true
-  description: Student name.
+  description: Full legal name of the enrolled student.
 - name: gender
   type: STRING
   nullable: true
-  description: Gender.
+  description: The gender of the individual (e.g., 'M' for Male, 'F' for Female).
 - name: surname
   type: STRING
   nullable: true
@@ -121,7 +124,8 @@ columns:
 - name: social_category
   type: STRING
   nullable: true
-  description: Social category.
+  description: The social demographic category or caste classification (e.g., 'SC',
+    'ST', 'BC', 'OC').
 - name: minority_status
   type: STRING
   nullable: true
@@ -129,7 +133,7 @@ columns:
 - name: disability_flag
   type: STRING
   nullable: true
-  description: Disability flag.
+  description: Boolean indicator flag for disability ('Y' for Yes, 'N' for No).
 - name: disability_percentage
   type: DECIMAL(5,2)
   nullable: true
@@ -137,11 +141,12 @@ columns:
 - name: admission_flag
   type: STRING
   nullable: true
-  description: Admission flag.
+  description: Boolean indicator flag for admission ('Y' for Yes, 'N' for No).
 - name: current_grade
   type: STRING
   nullable: true
-  description: Current grade.
+  description: The current academic class or grade the student is enrolled in (e.g.,
+    '1', '2', ..., '10').
 - name: medium_key
   type: STRING
   nullable: true
@@ -153,23 +158,26 @@ columns:
 - name: mother_citizen_master_id_fk
   type: BIGINT
   nullable: true
-  description: Mother citizen master identifier fk.
+  description: 'Foreign Key: Links to the associated mother citizen master dimension
+    or master table.'
 - name: father_citizen_master_id_fk
   type: BIGINT
   nullable: true
-  description: Father citizen master identifier fk.
+  description: 'Foreign Key: Links to the associated father citizen master dimension
+    or master table.'
 - name: guardian_citizen_master_id_fk
   type: BIGINT
   nullable: true
-  description: Guardian citizen master identifier fk.
+  description: 'Foreign Key: Links to the associated guardian citizen master dimension
+    or master table.'
 - name: is_current_flag
   type: STRING
   nullable: true
-  description: Is current flag.
+  description: Boolean indicator flag for is current ('Y' for Yes, 'N' for No).
 - name: primary_mobile_no
   type: STRING
   nullable: true
-  description: Primary mobile no.
+  description: The primary 10-digit mobile contact number registered to the individual.
 - name: secondary_mobile_no
   type: STRING
   nullable: true
@@ -189,27 +197,30 @@ columns:
 - name: effective_start_date
   type: DATE
   nullable: true
-  description: Effective start date.
+  description: The specific date or timestamp when the effective start occurred.
 - name: effective_end_date
   type: DATE
   nullable: true
-  description: Effective end date.
+  description: The specific date or timestamp when the effective end occurred.
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_student_pk
 relationships:

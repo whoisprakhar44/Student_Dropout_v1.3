@@ -22,7 +22,7 @@ columns:
 - name: household_code
   type: VARCHAR
   nullable: true
-  description: Household code.
+  description: Standardized system code representing the household.
 - name: uid_num
   type: VARCHAR
   nullable: true
@@ -30,7 +30,7 @@ columns:
 - name: death_date
   type: DATE
   nullable: true
-  description: Death date.
+  description: The specific date or timestamp when the death occurred.
 - name: cause_of_death
   type: VARCHAR
   nullable: true
@@ -54,15 +54,16 @@ columns:
 - name: inserted_date
   type: TIMESTAMP
   nullable: true
-  description: Inserted date.
+  description: The specific date or timestamp when the inserted occurred.
 - name: updated_by
   type: VARCHAR
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: remarks
   type: VARCHAR
   nullable: true

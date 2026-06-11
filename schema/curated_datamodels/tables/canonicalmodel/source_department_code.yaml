@@ -43,11 +43,11 @@ columns:
 - name: source_department_code_pk
   type: INT
   nullable: true
-  description: Source department code pk.
+  description: 'Primary Key: Unique identifier for the source department code record.'
 - name: source_department_code
   type: STRING
   nullable: true
-  description: Source department code.
+  description: Standardized system code representing the source department.
 - name: department_name
   type: STRING
   nullable: true
@@ -63,7 +63,8 @@ columns:
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_at
   type: STRING
   nullable: true
@@ -71,7 +72,8 @@ columns:
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - source_department_code_pk
 relationships: []

@@ -15,19 +15,19 @@ columns:
 - name: district_code
   type: BIGINT
   nullable: true
-  description: District code.
+  description: Standardized system code representing the district.
 - name: mandal_code
   type: BIGINT
   nullable: true
-  description: Mandal code.
+  description: Standardized system code representing the mandal.
 - name: village_code
   type: BIGINT
   nullable: true
-  description: Village code.
+  description: Standardized system code representing the village.
 - name: division_code
   type: BIGINT
   nullable: true
-  description: Division code.
+  description: Standardized system code representing the division.
 - name: village_name_english
   type: NVARCHAR
   nullable: true
@@ -39,19 +39,20 @@ columns:
 - name: is_active
   type: VARCHAR
   nullable: true
-  description: Is active.
+  description: Indicates if the entity is currently active in the system ('Y' for
+    Yes, 'N' for No, or 'ACTIVE'/'INACTIVE').
 - name: gws_district_code
   type: BIGINT
   nullable: true
-  description: Gws district code.
+  description: Standardized system code representing the gws district.
 - name: gws_mandal_code
   type: BIGINT
   nullable: true
-  description: Gws mandal code.
+  description: Standardized system code representing the gws mandal.
 - name: gws_village_code
   type: BIGINT
   nullable: true
-  description: Gws village code.
+  description: Standardized system code representing the gws village.
 - name: remarks
   type: VARCHAR
   nullable: true

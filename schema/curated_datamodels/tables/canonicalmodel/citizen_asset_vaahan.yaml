@@ -65,15 +65,17 @@ columns:
 - name: citizen_asset_vaahan_pk
   type: BIGINT
   nullable: true
-  description: Citizen asset vaahan pk.
+  description: 'Primary Key: Unique identifier for the citizen asset vaahan record.'
 - name: citizen_master_fk
   type: BIGINT
   nullable: true
-  description: Citizen master fk.
+  description: 'Foreign Key: Links to the associated citizen master dimension or master
+    table.'
 - name: citizen_asset_vaahan_type_fk
   type: BIGINT
   nullable: true
-  description: Citizen asset vaahan type fk.
+  description: 'Foreign Key: Links to the associated citizen asset vaahan type dimension
+    or master table.'
 - name: registration_no
   type: STRING
   nullable: true
@@ -129,27 +131,30 @@ columns:
 - name: ownership_start_date
   type: DATE
   nullable: true
-  description: Ownership start date.
+  description: The specific date or timestamp when the ownership start occurred.
 - name: ownership_end_date
   type: DATE
   nullable: true
-  description: Ownership end date.
+  description: The specific date or timestamp when the ownership end occurred.
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_asset_vaahan_pk
 relationships: []

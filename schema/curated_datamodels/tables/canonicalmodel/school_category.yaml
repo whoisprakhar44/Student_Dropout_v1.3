@@ -51,11 +51,11 @@ columns:
 - name: school_category_id_pk
   type: BIGINT
   nullable: true
-  description: School category identifier primary key.
+  description: 'Primary Key: Unique identifier for the school category record.'
 - name: category_code
   type: STRING
   nullable: true
-  description: Category code.
+  description: Standardized system code representing the category.
 - name: category_name
   type: STRING
   nullable: true

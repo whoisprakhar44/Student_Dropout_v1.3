@@ -15,11 +15,11 @@ columns:
 - name: sec_code
   type: BIGINT
   nullable: true
-  description: Sec code.
+  description: Standardized system code representing the sec.
 - name: panchayat_lgd_code
   type: BIGINT
   nullable: true
-  description: Panchayat lgd code.
+  description: Standardized system code representing the panchayat lgd.
 - name: habitation_id
   type: BIGINT
   nullable: true
@@ -27,7 +27,7 @@ columns:
 - name: inserted_date
   type: TIMESTAMP
   nullable: true
-  description: Inserted date.
+  description: The specific date or timestamp when the inserted occurred.
 - name: cluster_id
   type: BIGINT
   nullable: true
@@ -39,7 +39,7 @@ columns:
 - name: vill_lgd_code
   type: BIGINT
   nullable: true
-  description: Vill lgd code.
+  description: Standardized system code representing the vill lgd.
 - name: village_name
   type: VARCHAR
   nullable: true
@@ -63,7 +63,8 @@ columns:
 - name: is_active
   type: VARCHAR
   nullable: true
-  description: Is active.
+  description: Indicates if the entity is currently active in the system ('Y' for
+    Yes, 'N' for No, or 'ACTIVE'/'INACTIVE').
 primary_key: []
 relationships: []
 business_terms:

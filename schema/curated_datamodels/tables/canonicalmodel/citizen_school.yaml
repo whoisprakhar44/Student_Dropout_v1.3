@@ -112,35 +112,40 @@ columns:
 - name: citizen_school_id_pk
   type: BIGINT
   nullable: true
-  description: Citizen school identifier primary key.
+  description: 'Primary Key: Unique identifier for the citizen school record.'
 - name: school_medium_id_fk
   type: BIGINT
   nullable: true
-  description: School medium identifier foreign key.
+  description: 'Foreign Key: Links to the associated school medium dimension or master
+    table.'
 - name: school_teacher_id_fk
   type: BIGINT
   nullable: true
-  description: School teacher identifier foreign key.
+  description: 'Foreign Key: Links to the associated school teacher dimension or master
+    table.'
 - name: school_category_id_fk
   type: BIGINT
   nullable: true
-  description: School category identifier foreign key.
+  description: 'Foreign Key: Links to the associated school category dimension or
+    master table.'
 - name: school_management_id_fk
   type: BIGINT
   nullable: true
-  description: School management identifier foreign key.
+  description: 'Foreign Key: Links to the associated school management dimension or
+    master table.'
 - name: school_dept_code
   type: STRING
   nullable: true
-  description: School dept code.
+  description: Standardized system code representing the school dept.
 - name: school_udise_code
   type: STRING
   nullable: true
-  description: School udise code.
+  description: The 11-digit Unified District Information System for Education (UDISE)
+    code uniquely identifying the school.
 - name: school_name
   type: STRING
   nullable: true
-  description: School name.
+  description: The official name of the educational institution or school.
 - name: school_address
   type: STRING
   nullable: true
@@ -148,19 +153,19 @@ columns:
 - name: district_name
   type: STRING
   nullable: true
-  description: District name.
+  description: The official name of the administrative district in Andhra Pradesh.
 - name: district_lgd_code
   type: STRING
   nullable: true
-  description: District lgd code.
+  description: Standardized system code representing the district lgd.
 - name: mandal_name
   type: STRING
   nullable: true
-  description: Mandal name.
+  description: The official name of the Mandal (sub-district administrative division).
 - name: mandal_lgd_code
   type: STRING
   nullable: true
-  description: Mandal lgd code.
+  description: Standardized system code representing the mandal lgd.
 - name: village_name
   type: STRING
   nullable: true
@@ -168,19 +173,19 @@ columns:
 - name: village_lgd_code
   type: STRING
   nullable: true
-  description: Village lgd code.
+  description: Standardized system code representing the village lgd.
 - name: urban_rural_flag
   type: STRING
   nullable: true
-  description: Urban rural flag.
+  description: Boolean indicator flag for urban rural ('Y' for Yes, 'N' for No).
 - name: latitude
   type: DECIMAL(9,6)
   nullable: true
-  description: Latitude.
+  description: The geographical latitude coordinate of the location.
 - name: longitude
   type: DECIMAL(9,6)
   nullable: true
-  description: Longitude.
+  description: The geographical longitude coordinate of the location.
 - name: school_pincode
   type: STRING
   nullable: true
@@ -188,7 +193,8 @@ columns:
 - name: functional_status
   type: STRING
   nullable: true
-  description: Functional status.
+  description: Indicates if the facility or equipment is currently in functional working
+    order.
 - name: academic_year_opened
   type: STRING
   nullable: true
@@ -204,39 +210,42 @@ columns:
 - name: pre_primary_flag
   type: STRING
   nullable: true
-  description: Pre primary flag.
+  description: Boolean indicator flag for pre primary ('Y' for Yes, 'N' for No).
 - name: vocational_flag
   type: STRING
   nullable: true
-  description: Vocational flag.
+  description: Boolean indicator flag for vocational ('Y' for Yes, 'N' for No).
 - name: building_status
   type: STRING
   nullable: true
-  description: Building status.
+  description: The current structural or operational status of the building facility.
 - name: electricity_availability_flag
   type: STRING
   nullable: true
-  description: Electricity availability flag.
+  description: Indicates whether functional electricity connections are available
+    ('Y' for Yes, 'N' for No).
 - name: drinking_water_availability_flag
   type: STRING
   nullable: true
-  description: Drinking water availability flag.
+  description: Indicates whether clean drinking water facilities are available and
+    functional ('Y' for Yes, 'N' for No).
 - name: toilet_boys_flag
   type: STRING
   nullable: true
-  description: Toilet boys flag.
+  description: Boolean indicator flag for toilet boys ('Y' for Yes, 'N' for No).
 - name: toilet_girls_flag
   type: STRING
   nullable: true
-  description: Toilet girls flag.
+  description: Indicates the availability of functional toilet facilities exclusively
+    for girls ('Y' for Yes, 'N' for No).
 - name: ict_enabled_flag
   type: STRING
   nullable: true
-  description: Ict enabled flag.
+  description: Boolean indicator flag for ict enabled ('Y' for Yes, 'N' for No).
 - name: playground_flag
   type: STRING
   nullable: true
-  description: Playground flag.
+  description: Boolean indicator flag for playground ('Y' for Yes, 'N' for No).
 - name: head_master_name
   type: STRING
   nullable: true
@@ -256,27 +265,27 @@ columns:
 - name: noc_required_flag
   type: STRING
   nullable: true
-  description: Noc required flag.
+  description: Boolean indicator flag for noc required ('Y' for Yes, 'N' for No).
 - name: noc_available_flag
   type: STRING
   nullable: true
-  description: Noc available flag.
+  description: Boolean indicator flag for noc available ('Y' for Yes, 'N' for No).
 - name: fire_safety_flag
   type: STRING
   nullable: true
-  description: Fire safety flag.
+  description: Boolean indicator flag for fire safety ('Y' for Yes, 'N' for No).
 - name: health_safety_flag
   type: STRING
   nullable: true
-  description: Health safety flag.
+  description: Boolean indicator flag for health safety ('Y' for Yes, 'N' for No).
 - name: effective_start_date
   type: DATE
   nullable: true
-  description: Effective start date.
+  description: The specific date or timestamp when the effective start occurred.
 - name: effective_end_date
   type: DATE
   nullable: true
-  description: Effective end date.
+  description: The specific date or timestamp when the effective end occurred.
 - name: is_current
   type: STRING
   nullable: true
@@ -284,19 +293,22 @@ columns:
 - name: created_date
   type: TIMESTAMP
   nullable: true
-  description: Created date.
+  description: Timestamp indicating exactly when this record was originally created
+    in the source system.
 - name: created_by
   type: STRING
   nullable: true
-  description: Created by.
+  description: The user ID or automated system process responsible for creating this
+    record.
 - name: updated_date
   type: TIMESTAMP
   nullable: true
-  description: Updated date.
+  description: Timestamp indicating the last time this record was modified or updated.
 - name: updated_by
   type: STRING
   nullable: true
-  description: Updated by.
+  description: The user ID or automated system process responsible for the most recent
+    update to this record.
 primary_key:
 - citizen_school_id_pk
 relationships:
